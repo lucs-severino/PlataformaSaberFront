@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import type { Usuario } from "../../../@types/Usuario"
 import { useTheme } from "styled-components"
 import { useNavigate } from "react-router-dom"
-import { getUsuarios, deleteUsuario } from "../../../services/requests" // Funções de serviço atualizadas
+import { getUsuarios, deleteUsuario } from "../../../services/requests" 
 import { 
     Body, 
     Container, 
@@ -19,8 +19,8 @@ import {
     Loading, 
     Pagination, 
     PaginationItem,
-    ContentArea // Importe o novo ContentArea aqui
-} from "./styles" // Importe de './styles' que você acabou de atualizar
+    ContentArea 
+} from "./styles" 
 import TextInput from "../../../components/TextInput"
 import { Button } from "../../../components/Button"
 import Alert from "../../../components/Alert"
@@ -32,8 +32,8 @@ export const Usuarios = () => {
     const [loadingRequest, setLoadingRequest] = useState(true)
     const [searchValue, setSearchValue] = useState('')
     const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false })
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]) // Estado para usuários
-    const [usuariosFiltered, setUsuariosFiltered] = useState<Usuario[]>([]) // Estado para usuários filtrados
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]) 
+    const [usuariosFiltered, setUsuariosFiltered] = useState<Usuario[]>([])
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
 
@@ -42,11 +42,10 @@ export const Usuarios = () => {
 
     const handleGetUsuarios = async () => {
         setLoadingRequest(true)
-        const request = await getUsuarios(currentPage) // Chama a função de serviço correta
+        const request = await getUsuarios(currentPage) 
         setLoadingRequest(false)
 
         if (request.data) {
-            // Se não houver valor de busca, exibe todos os usuários, caso contrário, mantém o filtro
             if (!searchValue) setUsuariosFiltered(request.data.usuarios.items) 
             setUsuarios(request.data.usuarios.items)
             setTotalPages(request.data.usuarios.pageTotal)
@@ -66,22 +65,19 @@ export const Usuarios = () => {
     }
 
     const handleSearch = () => {
-        // Filtra por nome em vez de título
         setUsuariosFiltered(usuarios.filter(usuario => usuario.nome.toLowerCase().includes(searchValue.toLowerCase())))
     }
 
-    const handleEditUsuario = (id: string) => navigate(`/usuarios/${id}/editar`) // Rota de navegação atualizada
-
+    const handleEditUsuario = (id: string) => navigate(`/usuarios/${id}/editar`) 
     const handleDeleteUsuario = async (id: string) => {
-        // Substitua window.confirm por um modal personalizado para melhor UX
-        // Exemplo: showCustomConfirmModal("Tem certeza que deseja excluir este usuário?", async () => { ... })
-        if (window.confirm("Tem certeza que deseja excluir este usuário?")) { // Mensagem atualizada
+       
+        if (window.confirm("Tem certeza que deseja excluir este usuário?")) { 
             setLoadingRequest(true)
-            await deleteUsuario(id) // Chama a função de serviço correta
+            await deleteUsuario(id) 
             await handleGetUsuarios()
             setLoadingRequest(false)
 
-            setShowAlert({ type: "success", message: "Usuário excluído com sucesso!", show: true }) // Mensagem atualizada
+            setShowAlert({ type: "success", message: "Usuário excluído com sucesso!", show: true }) 
         }
     }
 
@@ -89,17 +85,17 @@ export const Usuarios = () => {
         handleGetUsuarios()
     }, [currentPage])
 
-    // Efeito para filtrar usuários quando o valor de busca muda
+   
     useEffect(() => {
         handleSearch();
-    }, [searchValue, usuarios]); // Re-filtra quando o valor de busca ou a lista de usuários muda
+    }, [searchValue, usuarios]); 
 
 
     return (
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Usuários</HeaderTitle> {/* Título atualizado */}
+                    <HeaderTitle>Usuários</HeaderTitle> 
                     <HeaderSubtitle>Consulte e gerencie todos os usuários e filtre sua busca por nome!</HeaderSubtitle> {/* Subtítulo atualizado */}
                 </HeaderInfo>
 
@@ -136,13 +132,12 @@ export const Usuarios = () => {
 
             {!loadingRequest &&
                 <Body>
-                    {/* Use ContentArea para envolver o conteúdo da tabela e paginação */}
                     <ContentArea>
                         {usuariosFiltered.length === 0 ?
                             <Empty>
                                 <EmptyIcon />
                                 <EmptyLabel>
-                                    Nenhum usuário encontrado {/* Mensagem atualizada */}
+                                    Nenhum usuário encontrado 
                                 </EmptyLabel>
                             </Empty>
                             :

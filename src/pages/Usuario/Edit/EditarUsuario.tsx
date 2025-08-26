@@ -9,7 +9,7 @@ import TextInput from "../../../components/TextInput";
 import SelectInput from "../../../components/SelectInput";
 import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
-import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderSubtitle, HeaderTitle, Loading } from "./styles";
+import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderTitle, Loading } from "./styles";
 import { Label } from "../../../components/TextInput/styles";
 
 
@@ -37,15 +37,16 @@ export const EditarUsuario = () => {
         const response = await getUsuario(id);
         setLoadingRequest(false);
 
+        if (response.data) {
 
-        if (response.data && response.data.usuario) {
-            const userData = response.data.usuario;
+            const userData = response.data;
 
             const formattedData = {
-                ...userData,
+                ...userData, 
                 dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0]
             };
             setFormData(formattedData);
+
         } else if (response.error) {
             setShowAlert({ type: "error", message: `Erro ao buscar usuário: ${response.error}`, show: true });
         }
@@ -81,7 +82,6 @@ export const EditarUsuario = () => {
     return (
         <Container>
             <Header>
-                {/* Bloco de Informações */}
                 <HeaderInfo>
                     <HeaderTitle>Editar Usuário</HeaderTitle>
                 </HeaderInfo>
@@ -118,8 +118,8 @@ export const EditarUsuario = () => {
                     <Form onSubmit={handleSubmit}>
                         <FormGrid>
                             <FormGroup>
-                                <Label htmlFor="nome">Nome Completo</Label>
-                                <TextInput  id="nome" name="nome" value={formData.nome} onChange={handleInputChange} required borderRadius="sm" />
+                                <Label>Nome Completo</Label>
+                                <TextInput name="nome" value={formData.nome} onChange={handleInputChange} required borderRadius="sm" />
                             </FormGroup>
                             <FormGroup>
                                 <Label>E-mail</Label>

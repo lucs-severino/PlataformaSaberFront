@@ -21,14 +21,12 @@ export type ApiGetUsuarios = {
         prevPage?: string,
         offset: number,
         itemsTotal: number,
-        pageTotal: number, // <-- Total de páginas adicionado aqui
+        pageTotal: number, 
         items: Usuario[]
     }
 }
 
-export type ApiGetUsuario = {
-    usuario: Usuario;
-}
+export type ApiGetUsuario = Usuario;
 
 export type ApiNewUsuario = {
     usuario: Usuario;
