@@ -1,0 +1,1 @@
+ReactJS 18 com TypeScript: conceitos fundamentais e avançados para desenvolvimento moderno com React. Neste curso, você aprenderá sobre Redux, autenticação, gestão de requisições, manipulação de rotas com React Router, uso de Styled-Components, entre outros tópicos essenciais.

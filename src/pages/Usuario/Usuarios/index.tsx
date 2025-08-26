@@ -1,0 +1,182 @@
+import { useEffect, useState } from "react"
+import type { Usuario } from "../../../@types/Usuario"
+import { useTheme } from "styled-components"
+import { useNavigate } from "react-router-dom"
+import { getUsuarios, deleteUsuario } from "../../../services/requests" // Funções de serviço atualizadas
+import { 
+    Body, 
+    Container, 
+    Empty, 
+    EmptyIcon, 
+    EmptyLabel, 
+    Header, 
+    HeaderInfo, 
+    HeaderSearch, 
+    HeaderSearchIcon, 
+    HeaderSearchInput, 
+    HeaderSubtitle, 
+    HeaderTitle, 
+    Loading, 
+    Pagination, 
+    PaginationItem,
+    ContentArea // Importe o novo ContentArea aqui
+} from "./styles" // Importe de './styles' que você acabou de atualizar
+import TextInput from "../../../components/TextInput"
+import { Button } from "../../../components/Button"
+import Alert from "../../../components/Alert"
+import { ScaleLoader } from "react-spinners"
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md"
+import { UsuariosTable } from "../../../components/UsuariosTable"
+
+export const Usuarios = () => {
+    const [loadingRequest, setLoadingRequest] = useState(true)
+    const [searchValue, setSearchValue] = useState('')
+    const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false })
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]) // Estado para usuários
+    const [usuariosFiltered, setUsuariosFiltered] = useState<Usuario[]>([]) // Estado para usuários filtrados
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
+
+    const theme = useTheme()
+    const navigate = useNavigate()
+
+    const handleGetUsuarios = async () => {
+        setLoadingRequest(true)
+        const request = await getUsuarios(currentPage) // Chama a função de serviço correta
+        setLoadingRequest(false)
+
+        if (request.data) {
+            // Se não houver valor de busca, exibe todos os usuários, caso contrário, mantém o filtro
+            if (!searchValue) setUsuariosFiltered(request.data.usuarios.items) 
+            setUsuarios(request.data.usuarios.items)
+            setTotalPages(request.data.usuarios.pageTotal)
+        }
+
+        if (request.error) {
+            setShowAlert({ type: "error", message: request.error, show: true })
+        }
+    }
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1)
+    }
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+    }
+
+    const handleSearch = () => {
+        // Filtra por nome em vez de título
+        setUsuariosFiltered(usuarios.filter(usuario => usuario.nome.toLowerCase().includes(searchValue.toLowerCase())))
+    }
+
+    const handleEditUsuario = (id: string) => navigate(`/usuarios/${id}/editar`) // Rota de navegação atualizada
+
+    const handleDeleteUsuario = async (id: string) => {
+        // Substitua window.confirm por um modal personalizado para melhor UX
+        // Exemplo: showCustomConfirmModal("Tem certeza que deseja excluir este usuário?", async () => { ... })
+        if (window.confirm("Tem certeza que deseja excluir este usuário?")) { // Mensagem atualizada
+            setLoadingRequest(true)
+            await deleteUsuario(id) // Chama a função de serviço correta
+            await handleGetUsuarios()
+            setLoadingRequest(false)
+
+            setShowAlert({ type: "success", message: "Usuário excluído com sucesso!", show: true }) // Mensagem atualizada
+        }
+    }
+
+    useEffect(() => {
+        handleGetUsuarios()
+    }, [currentPage])
+
+    // Efeito para filtrar usuários quando o valor de busca muda
+    useEffect(() => {
+        handleSearch();
+    }, [searchValue, usuarios]); // Re-filtra quando o valor de busca ou a lista de usuários muda
+
+
+    return (
+        <Container>
+            <Header>
+                <HeaderInfo>
+                    <HeaderTitle>Usuários</HeaderTitle> {/* Título atualizado */}
+                    <HeaderSubtitle>Consulte e gerencie todos os usuários e filtre sua busca por nome!</HeaderSubtitle> {/* Subtítulo atualizado */}
+                </HeaderInfo>
+
+                <HeaderSearch>
+                    <HeaderSearchInput>
+                        <TextInput
+                            value={searchValue}
+                            onChange={e => setSearchValue(e.target.value)}
+                            placeholder="Pesquisar por..."
+                        />
+                    </HeaderSearchInput>
+
+                    <Button
+                        onClick={handleSearch}
+                        borderRadius="rounded"
+                    >
+                        <HeaderSearchIcon />
+                    </Button>
+                </HeaderSearch>
+            </Header>
+
+            <Alert
+                type={showAlert.type}
+                title={showAlert.message}
+                show={showAlert.show}
+                setShow={show => setShowAlert({ ...showAlert, show })}
+            />
+
+            {loadingRequest &&
+                <Loading>
+                    <ScaleLoader color={theme.COLORS.primary} />
+                </Loading>
+            }
+
+            {!loadingRequest &&
+                <Body>
+                    {/* Use ContentArea para envolver o conteúdo da tabela e paginação */}
+                    <ContentArea>
+                        {usuariosFiltered.length === 0 ?
+                            <Empty>
+                                <EmptyIcon />
+                                <EmptyLabel>
+                                    Nenhum usuário encontrado {/* Mensagem atualizada */}
+                                </EmptyLabel>
+                            </Empty>
+                            :
+                            <>
+                                <UsuariosTable
+                                    data={usuariosFiltered}
+                                    onEdit={handleEditUsuario}
+                                    onDelete={handleDeleteUsuario}
+                                />
+
+                                <Pagination>
+                                    <PaginationItem $isLeft onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                        <MdOutlineKeyboardArrowLeft size={21} />
+                                    </PaginationItem>
+
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <PaginationItem
+                                            key={index}
+                                            $active={index + 1 === currentPage}
+                                            onClick={() => setCurrentPage(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </PaginationItem>
+                                    ))}
+
+                                    <PaginationItem $isRight onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                        <MdOutlineKeyboardArrowRight size={21} />
+                                    </PaginationItem>
+                                </Pagination>
+                            </>
+                        }
+                    </ContentArea>
+                </Body>
+            }
+        </Container>
+    )
+}
