@@ -1,7 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "styled-components";
-import type { Usuario } from "../../../@types/Usuario";
 import { getUsuario, updateUsuario } from "../../../services/requests";
 
 import { Button } from "../../../components/Button";
@@ -12,8 +11,16 @@ import { ScaleLoader } from "react-spinners";
 import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderTitle, Loading } from "./styles";
 import { Label } from "../../../components/TextInput/styles";
 
-
-type FormData = Omit<Usuario, 'id' | 'dataCadastro'>;
+// CORREÇÃO: Renomeamos o tipo de "FormData" para "UsuarioFormData"
+// para evitar conflito com o tipo global do navegador.
+export type UsuarioFormData = {
+    nome: string;
+    email: string;
+    cpf: string;
+    dataNascimento: string;
+    tipoPessoa: 'Aluno' | 'Professor' | 'Administracao';
+    status: 'Ativo' | 'Inativo';
+};
 
 export const EditarUsuario = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,7 +29,8 @@ export const EditarUsuario = () => {
 
     const [loadingRequest, setLoadingRequest] = useState(true);
     const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false });
-    const [formData, setFormData] = useState<FormData>({
+    // Usamos o novo nome do tipo aqui
+    const [formData, setFormData] = useState<UsuarioFormData>({
         nome: '',
         email: '',
         cpf: '',
@@ -38,14 +46,18 @@ export const EditarUsuario = () => {
         setLoadingRequest(false);
 
         if (response.data) {
-
             const userData = response.data;
-
-            const formattedData = {
-                ...userData, 
-                dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0]
+            // E aqui também
+            const newFormData: UsuarioFormData = {
+                nome: userData.nome,
+                email: userData.email,
+                cpf: userData.cpf,
+                dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0],
+                status: userData.status as UsuarioFormData['status'],
+                tipoPessoa: userData.tipoPessoa as UsuarioFormData['tipoPessoa']
             };
-            setFormData(formattedData);
+
+            setFormData(newFormData);
 
         } else if (response.error) {
             setShowAlert({ type: "error", message: `Erro ao buscar usuário: ${response.error}`, show: true });
@@ -68,7 +80,7 @@ export const EditarUsuario = () => {
         if (!id) return;
 
         setLoadingRequest(true);
-        const response = await updateUsuario(id, formData.nome, formData.email, formData.status, formData.tipoPessoa);
+        const response = await updateUsuario(id, formData);
         setLoadingRequest(false);
 
         if (response.data) {
@@ -85,8 +97,6 @@ export const EditarUsuario = () => {
                 <HeaderInfo>
                     <HeaderTitle>Editar Usuário</HeaderTitle>
                 </HeaderInfo>
-
-                {/* Bloco de Ações */}
                 <ActionButtons>
                     <Button
                         type="button"
@@ -95,8 +105,7 @@ export const EditarUsuario = () => {
                     >
                         Cancelar
                     </Button>
-
-                    <Button type="submit">
+                    <Button type="submit" form="edit-user-form">
                         Salvar Alterações
                     </Button>
                 </ActionButtons>
@@ -115,7 +124,7 @@ export const EditarUsuario = () => {
                 </Loading>
             ) : (
                 <Body>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} id="edit-user-form">
                         <FormGrid>
                             <FormGroup>
                                 <Label>Nome Completo</Label>

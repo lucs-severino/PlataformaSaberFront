@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type ButtonHTMLAttributes, useId, type ChangeEvent } from "react";
+import { useState, useEffect, useRef, type ButtonHTMLAttributes, useId} from "react";
 import { Container, Label, SelectWrapper, SelectTrigger, OptionsList, OptionItem } from "./styles";
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> & {
@@ -36,8 +36,7 @@ const SelectInput = ({ label, options, name, value, onChange, ...rest }: Props) 
           name,
           value: optionValue,
         },
-      } as unknown as ChangeEvent<HTMLSelectElement>;
-
+      };
       onChange(syntheticEvent);
     }
     setIsOpen(false);

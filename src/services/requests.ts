@@ -1,7 +1,8 @@
 import type { ApiDeleteUser, ApiGetUser, ApiSignIn, ApiSignUp, ApiUpdateUser } from "../@types/Auth"
 import type { ApiDeleteTransaction, ApiGetDashboard, ApiGetTransaction, ApiGetTransactions, ApiNewTransaction, ApiUpdateTransaction, TransactionStatus } from "../@types/Transaction"
-import type { TipoPessoa, Usuario, UsuarioStatus, ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario } from "../@types/Usuario"
+import type { TipoPessoa, UsuarioStatus, ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario } from "../@types/Usuario"
 import { formatDate } from "../utils/formatDate"
+import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
 
 // Auth
@@ -96,20 +97,13 @@ export const newUsuario = async (
     })
 }
 
-export const updateUsuario = async (
-    id: string,
-    nome: string,
-    email: string,
-    status: UsuarioStatus,
-    tipoPessoa: TipoPessoa
-) => {
+export const updateUsuario = async (id: string, data: UsuarioFormData) => {
     return await api<ApiUpdateUsuario>({
         endpoint: `usuarios/${id}`,
         method: 'PUT',
-        data: { nome, email, status, tipoPessoa }
+        data: data
     })
 }
-
 export const deleteUsuario = async (id: string) => {
     return await api<ApiDeleteUsuario>({
         endpoint: `usuarios/${id}`,

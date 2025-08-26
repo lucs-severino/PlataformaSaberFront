@@ -32,6 +32,11 @@ export const FormGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 
+  border: 8px solid ${(props) => props.theme.COLORS.borderColor || '#1b1010ff'}; 
+  border-radius: 8px;
+  padding: 30px;
+
+
   @media (max-width: 960px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -39,13 +44,16 @@ export const FormGrid = styled.div`
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 20px;
+    padding: 20px;
   }
 `;
 
-export const FormGroup = styled.div`
+export const FormGroup = styled.div<{ span?: number }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  grid-column: span ${props => props.span || 1};
 `;
 
 export const Label = styled.label`
