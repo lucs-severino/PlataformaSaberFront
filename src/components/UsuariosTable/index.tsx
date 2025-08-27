@@ -17,10 +17,9 @@ import {
 type Props = {
     data: Usuario[],
     onEdit: (id: string) => void,
-    onDelete: (id: string) => void
 }
 
-export const UsuariosTable = ({ data, onEdit, onDelete }: Props) => {
+export const UsuariosTable = ({ data, onEdit }: Props) => {
     const theme = useTheme()
 
     return (
@@ -67,9 +66,6 @@ export const UsuariosTable = ({ data, onEdit, onDelete }: Props) => {
                                 <Actions>
                                     <ActionBtn $variant="warning" onClick={() => onEdit(usuario.id)}>
                                         <EditIcon />
-                                    </ActionBtn>
-                                    <ActionBtn $variant="danger" onClick={() => onDelete(usuario.id)}>
-                                        <DeleteIcon />
                                     </ActionBtn>
                                 </Actions>
                             </TableCell>

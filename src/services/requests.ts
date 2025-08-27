@@ -82,19 +82,12 @@ export const getUsuario = async (id: string) => {
     })
 }
 
-export const newUsuario = async (
-    nome: string,
-    email: string,
-    cpf: string,
-    dataNascimento: string,
-    status: UsuarioStatus,
-    tipoPessoa: TipoPessoa
-) => {
+export const newUsuario = async (data: UsuarioFormData) => {
     return await api<ApiNewUsuario>({
         endpoint: 'usuarios',
         method: 'POST',
-        data: { nome, email, cpf, dataNascimento, status, tipoPessoa }
-    })
+        data: data 
+    });
 }
 
 export const updateUsuario = async (id: string, data: UsuarioFormData) => {

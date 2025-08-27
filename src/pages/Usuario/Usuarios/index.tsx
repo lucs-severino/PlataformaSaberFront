@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import type { Usuario } from "../../../@types/Usuario"
 import { useTheme } from "styled-components"
 import { useNavigate } from "react-router-dom"
-import { getUsuarios, deleteUsuario } from "../../../services/requests" 
+import { getUsuarios} from "../../../services/requests" 
 import { 
     Body, 
     Container, 
@@ -69,17 +69,6 @@ export const Usuarios = () => {
     }
 
     const handleEditUsuario = (id: string) => navigate(`/usuarios/${id}/editar`) 
-    const handleDeleteUsuario = async (id: string) => {
-       
-        if (window.confirm("Tem certeza que deseja excluir este usuário?")) { 
-            setLoadingRequest(true)
-            await deleteUsuario(id) 
-            await handleGetUsuarios()
-            setLoadingRequest(false)
-
-            setShowAlert({ type: "success", message: "Usuário excluído com sucesso!", show: true }) 
-        }
-    }
 
     useEffect(() => {
         handleGetUsuarios()
@@ -145,7 +134,6 @@ export const Usuarios = () => {
                                 <UsuariosTable
                                     data={usuariosFiltered}
                                     onEdit={handleEditUsuario}
-                                    onDelete={handleDeleteUsuario}
                                 />
 
                                 <Pagination>

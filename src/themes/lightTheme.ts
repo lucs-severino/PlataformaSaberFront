@@ -7,7 +7,7 @@ export const lightTheme = {
         background: '#F7F8FD',
         textColor400: '#676e79',
         textColor500: '#344055',
-        borderColor: '#E2E8F0',
+        borderColor: '#adb2c2ff',
         danger: '#D1493D',
         success: '#2B825C',
         warning: '#eba800',

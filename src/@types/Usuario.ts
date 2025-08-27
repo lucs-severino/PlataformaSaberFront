@@ -32,9 +32,7 @@ export type ApiNewUsuario = {
     usuario: Usuario;
 }
 
-export type ApiUpdateUsuario = {
-    usuario: Usuario;
-}
+export type ApiUpdateUsuario = Usuario; 
 
 export type ApiDeleteUsuario = {
     success: boolean;

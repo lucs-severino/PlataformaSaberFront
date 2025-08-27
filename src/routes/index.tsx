@@ -9,6 +9,7 @@ import { Account } from "../pages/Account"
 import { NotFound } from "../pages/NotFound"
 import { Usuarios } from "../pages/Usuario/Usuarios"
 import { EditarUsuario } from "../pages/Usuario/Edit/EditarUsuario"
+import { CadastrarUsuario } from "../pages/Usuario/New/CadastrarUsuario"
 
 export const MainRoutes = () => {
     return (
@@ -60,6 +61,10 @@ export const MainRoutes = () => {
                     <Route
                         path=":id/editar"
                         element={<EditarUsuario />}
+                    />
+                      <Route
+                        path="Cadastrar"
+                        element={<CadastrarUsuario />}
                     />
                 </Route>
             </Route>

@@ -10,16 +10,15 @@ import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
 import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderTitle, Loading } from "./styles";
 import { Label } from "../../../components/TextInput/styles";
+import { validateCPF } from "../../../utils/cpfValidator";
 
-// CORREÇÃO: Renomeamos o tipo de "FormData" para "UsuarioFormData"
-// para evitar conflito com o tipo global do navegador.
 export type UsuarioFormData = {
     nome: string;
     email: string;
     cpf: string;
     dataNascimento: string;
     tipoPessoa: 'Aluno' | 'Professor' | 'Administracao';
-    status: 'Ativo' | 'Inativo';
+    status: 'Ativo' | 'Desativado';
 };
 
 export const EditarUsuario = () => {
@@ -29,7 +28,7 @@ export const EditarUsuario = () => {
 
     const [loadingRequest, setLoadingRequest] = useState(true);
     const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false });
-    // Usamos o novo nome do tipo aqui
+
     const [formData, setFormData] = useState<UsuarioFormData>({
         nome: '',
         email: '',
@@ -47,7 +46,7 @@ export const EditarUsuario = () => {
 
         if (response.data) {
             const userData = response.data;
-            // E aqui também
+
             const newFormData: UsuarioFormData = {
                 nome: userData.nome,
                 email: userData.email,
@@ -77,6 +76,12 @@ export const EditarUsuario = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+
+        if (!validateCPF(formData.cpf)) {
+            setShowAlert({ type: "error", message: "O CPF informado é inválido.", show: true });
+            return;
+        }
+
         if (!id) return;
 
         setLoadingRequest(true);
@@ -163,7 +168,7 @@ export const EditarUsuario = () => {
                                     onChange={handleInputChange}
                                     options={[
                                         { label: 'Ativo', value: 'Ativo' },
-                                        { label: 'Inativo', value: 'Inativo' },
+                                        { label: 'Desativado', value: 'Desativado' },
                                     ]}
                                 />
                             </FormGroup>

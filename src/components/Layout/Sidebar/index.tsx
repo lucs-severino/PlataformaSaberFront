@@ -3,11 +3,12 @@ import { useAppSelector } from "../../../redux/hooks"
 import { useLocation } from "react-router-dom"
 import { Container, Footer, Header, HeaderIcon, HeaderLogo, Navigation, NavigationItem, NavigationItemIcon, NavigationItemLabel, User, UserAvatar, UserName , Link} from "./styles"
 import { Button } from "../../Button"
-import { MdOutlineDashboard, MdOutlineListAlt } from "react-icons/md"
+import { MdOutlineDashboard, MdOutlineListAlt, MdPerson, MdPersonAdd } from "react-icons/md"
 
 const menuItems = [
     { label: 'Dashboard', url: '/', icon: <MdOutlineDashboard /> },
     { label: 'Usuarios', url: '/Usuarios', icon: <MdOutlineListAlt /> },
+    { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd /> },
 ]
 
 export const Sidebar = () => {
