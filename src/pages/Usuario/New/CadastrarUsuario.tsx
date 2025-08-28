@@ -57,10 +57,19 @@ export const CadastrarUsuario = () => {
         setLoadingRequest(false);
 
         if (response.data) {
-            setShowAlert({ type: "success", message: "Usuário cadastrado com sucesso!", show: true });
-            setTimeout(() => navigate('/usuarios'), 1500);
+            setShowAlert({
+                type: "success",
+                message: "Usuário cadastrado com sucesso!",
+                show: true,
+            });
+
+            setTimeout(() => navigate("/usuarios"), 1500);
         } else {
-            setShowAlert({ type: "error", message: `Erro ao cadastrar: ${response.error}`, show: true });
+            setShowAlert({
+                type: "error",
+                message: `Erro ao cadastrar: ${response.error}`,
+                show: true,
+            });
         }
     };
 

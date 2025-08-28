@@ -4,7 +4,7 @@ import { Link as LinkRouter } from "react-router-dom";
 export const Wrapper = styled.div`
     background-color: ${props => props.theme.COLORS.background};
     min-height: 100vh;
-    display: flex;
+    display: flex;//como 
     justify-content: center;
 `
 
