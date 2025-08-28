@@ -81,6 +81,7 @@ export const Auth = ({ type }: Props) => {
                         />
 
                         <TextInput
+                            type="password"   
                             value={passwordInput}
                             placeholder="Digite sua senha"
                             onChange={e => setPasswordInput(e.target.value)}
