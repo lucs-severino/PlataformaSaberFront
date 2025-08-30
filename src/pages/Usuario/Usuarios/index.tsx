@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import type { Usuario } from "../../../@types/Usuario"
 import { useTheme } from "styled-components"
 import { useNavigate } from "react-router-dom"
-import { getUsuarios} from "../../../services/requests" 
+import { getUsuarios } from "../../../services/requests" 
 import { 
     Body, 
     Container, 
@@ -32,26 +32,26 @@ export const Usuarios = () => {
     const [loadingRequest, setLoadingRequest] = useState(true)
     const [searchValue, setSearchValue] = useState('')
     const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false })
+    
+    // Simplificado: Agora temos apenas um estado para os usuários.
     const [usuarios, setUsuarios] = useState<Usuario[]>([]) 
-    const [usuariosFiltered, setUsuariosFiltered] = useState<Usuario[]>([])
+    
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const [activeSearch, setActiveSearch] = useState('')
 
     const theme = useTheme()
     const navigate = useNavigate()
 
-    const handleGetUsuarios = async () => {
+    const fetchUsuarios = async () => {
         setLoadingRequest(true)
-        const request = await getUsuarios(currentPage) 
+        const request = await getUsuarios(currentPage, activeSearch) 
         setLoadingRequest(false)
 
         if (request.data) {
-            if (!searchValue) setUsuariosFiltered(request.data.usuarios.items) 
             setUsuarios(request.data.usuarios.items)
             setTotalPages(request.data.usuarios.pageTotal)
-        }
-
-        if (request.error) {
+        } else if (request.error) {
             setShowAlert({ type: "error", message: request.error, show: true })
         }
     }
@@ -65,27 +65,22 @@ export const Usuarios = () => {
     }
 
     const handleSearch = () => {
-        setUsuariosFiltered(usuarios.filter(usuario => usuario.nome.toLowerCase().includes(searchValue.toLowerCase())))
+        setCurrentPage(1) 
+        setActiveSearch(searchValue) 
     }
 
     const handleEditUsuario = (id: string) => navigate(`/usuarios/${id}/editar`) 
 
     useEffect(() => {
-        handleGetUsuarios()
-    }, [currentPage])
-
-   
-    useEffect(() => {
-        handleSearch();
-    }, [searchValue, usuarios]); 
-
+        fetchUsuarios()
+    }, [currentPage, activeSearch]) 
 
     return (
         <Container>
             <Header>
                 <HeaderInfo>
                     <HeaderTitle>Usuários</HeaderTitle> 
-                    <HeaderSubtitle>Consulte e gerencie todos os usuários e filtre sua busca por nome!</HeaderSubtitle> {/* Subtítulo atualizado */}
+                    <HeaderSubtitle>Consulte e gerencie todos os usuários e filtre sua busca por nome!</HeaderSubtitle>
                 </HeaderInfo>
 
                 <HeaderSearch>
@@ -93,12 +88,13 @@ export const Usuarios = () => {
                         <TextInput
                             value={searchValue}
                             onChange={e => setSearchValue(e.target.value)}
-                            placeholder="Pesquisar por..."
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()} 
+                            placeholder="Pesquisar por nome..."
                         />
                     </HeaderSearchInput>
 
                     <Button
-                        onClick={handleSearch}
+                        onClick={handleSearch} // Ação de clique agora chama o handleSearch
                         borderRadius="rounded"
                     >
                         <HeaderSearchIcon />
@@ -122,7 +118,7 @@ export const Usuarios = () => {
             {!loadingRequest &&
                 <Body>
                     <ContentArea>
-                        {usuariosFiltered.length === 0 ?
+                        {usuarios.length === 0 ?
                             <Empty>
                                 <EmptyIcon />
                                 <EmptyLabel>
@@ -132,29 +128,31 @@ export const Usuarios = () => {
                             :
                             <>
                                 <UsuariosTable
-                                    data={usuariosFiltered}
+                                    data={usuarios}
                                     onEdit={handleEditUsuario}
                                 />
 
-                                <Pagination>
-                                    <PaginationItem $isLeft onClick={handlePreviousPage} disabled={currentPage === 1}>
-                                        <MdOutlineKeyboardArrowLeft size={21} />
-                                    </PaginationItem>
-
-                                    {[...Array(totalPages)].map((_, index) => (
-                                        <PaginationItem
-                                            key={index}
-                                            $active={index + 1 === currentPage}
-                                            onClick={() => setCurrentPage(index + 1)}
-                                        >
-                                            {index + 1}
+                                {totalPages > 1 && (
+                                    <Pagination>
+                                        <PaginationItem $isLeft onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                            <MdOutlineKeyboardArrowLeft size={21} />
                                         </PaginationItem>
-                                    ))}
 
-                                    <PaginationItem $isRight onClick={handleNextPage} disabled={currentPage === totalPages}>
-                                        <MdOutlineKeyboardArrowRight size={21} />
-                                    </PaginationItem>
-                                </Pagination>
+                                        {[...Array(totalPages)].map((_, index) => (
+                                            <PaginationItem
+                                                key={index}
+                                                $active={index + 1 === currentPage}
+                                                onClick={() => setCurrentPage(index + 1)}
+                                            >
+                                                {index + 1}
+                                            </PaginationItem>
+                                        ))}
+
+                                        <PaginationItem $isRight onClick={handleNextPage} disabled={currentPage === totalPages}>
+                                            <MdOutlineKeyboardArrowRight size={21} />
+                                        </PaginationItem>
+                                    </Pagination>
+                                )}
                             </>
                         }
                     </ContentArea>

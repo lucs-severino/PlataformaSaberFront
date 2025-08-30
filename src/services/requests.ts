@@ -70,10 +70,17 @@ export const deleteTransaction = async (id: number) => {
 
 
 //// Usuarios
-export const getUsuarios = async (page: number) => {
+export const getUsuarios = async (page: number, nome?: string) => {
+
+    const params: { page: number; nome?: string } = { page };
+    if (nome && nome.trim() !== '') {
+        params.nome = nome;
+    }
+
     return await api<ApiGetUsuarios>({
-        endpoint: 'usuarios', data: {page}
-    })
+        endpoint: 'usuarios',
+        data: params
+    });
 }
 
 export const getUsuario = async (id: string) => {

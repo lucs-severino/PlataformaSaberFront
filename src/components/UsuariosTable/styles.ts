@@ -8,25 +8,24 @@ export const Container = styled.div`
 
 // Wrapper para habilitar a rolagem horizontal em telas menores
 export const TableWrapper = styled.div`
-    width: 100%; // Garante que o wrapper ocupa toda a largura disponível
-    overflow-x: auto; // Habilita a rolagem horizontal se o conteúdo for maior que a tela
-    -webkit-overflow-scrolling: touch; // Melhora a rolagem em dispositivos iOS
-    border-radius: 8px; // Aplica o border-radius no wrapper para consistência
-    border: 1px solid ${props => props.theme.COLORS.tableHeaderBorderColor}; // Borda para o wrapper
-
-    /* Remove a borda da tabela se o wrapper já tiver uma */
-    & > table {
-        border: none;
-    }
-
-    @media (max-width: 768px) {
-        // Estilos específicos para telas menores (opcional, já tratado por overflow-x)
-    }
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Sombra sutil para a tabela
+  @media (max-width: 768px) {
+    overflow-x: scroll;
+    border-radius: 5px;
+  }
 `;
 
 export const Table = styled.table`
-    width: 100%;
-    border-spacing: 0;
+  width: 100%;
+  border-spacing: 0;
+  font-size: ${(props) => props.theme.FONT_SIZES.md}; 
+  @media (max-width: 768px) {
+    font-size: ${(props) => props.theme.FONT_SIZES.sm}; 
+  }
 `;
 
 export const TableHead = styled.thead`
@@ -34,7 +33,7 @@ export const TableHead = styled.thead`
     color: ${props => props.theme.COLORS.textColor500};
 
     @media (max-width: 768px) {
-        display: none; // Esconde o cabeçalho original em telas pequenas
+        display: none; 
     }
 `;
 
@@ -58,53 +57,46 @@ export const TableHeadCell = styled.th`
 `;
 
 export const TableRow = styled.tr`
-    &:hover {
-        background-color: ${props => props.theme.COLORS.tableRowHover};
-    }
-
-    @media (max-width: 768px) {
-        display: block;
-        border-bottom: 2px solid ${props => props.theme.COLORS.primary};
-        margin-bottom: 20px;
-
-        &:last-of-type {
-            margin-bottom: 0;
-        }
-    }
+  &:hover {
+    background-color: ${(props) => props.theme.COLORS.tableRowHover};
+    transform: scale(1.02); // Efeito de expansão na linha ao passar o mouse
+    transition: transform 0.2s ease-in-out;
+  }
+  @media (max-width: 768px) {
+    display: block;
+    margin-bottom: 15px;
+    border-bottom: 1px solid ${(props) => props.theme.COLORS.borderColor};
+    padding: 10px;
+    background-color: ${(props) => props.theme.COLORS.background};
+  }
 `;
 
 export const TableCell = styled.td`
+  padding: 12px 15px;
+  color: ${(props) => props.theme.COLORS.textColor500};
+  text-align: left;
+  border-bottom: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
+  &:not(:last-child) {
+    border-right: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
+  }
+  &:first-child {
+    font-weight: bold; // Destaque para a primeira célula
+  }
+  @media (max-width: 768px) {
+    display: block;
+    text-align: right;
     padding: 10px 20px;
-    color: ${props => props.theme.COLORS.textColor500};
-
-    &:not(:last-child) {
-        border-right: 1px solid ${props => props.theme.COLORS.tableHeaderBorderColor};
+    position: relative;
+    box-sizing: border-box;
+    &:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      font-weight: bold;
+      top: 50%;
+      transform: translateY(-50%);
     }
-
- @media (max-width: 768px) {
-        display: block;
-        text-align: right; 
-        position: relative;
-        padding: 12px 15px 12px 50%;
-        box-sizing: border-box;
-        border-right: none !important; 
-        border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
-
-        &:before {
-            content: attr(data-label); 
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 15px;
-            width: calc(50% - 30px);
-            text-align: left;
-            font-weight: bold;
-        }
-
-        &:last-child {
-            border-bottom: 0;
-        }
-    }
+  }
 `;
 
 export const Actions = styled.div`
@@ -117,27 +109,31 @@ export const Actions = styled.div`
 `;
 
 export const ActionBtn = styled.button<{ $variant: string }>`
-    padding: 1px 5px;
-    border-radius: 3px;
-    border: 1px solid transparent;
-    background-color: ${props => props.$variant === 'warning' ? props.theme.COLORS.warning : props.theme.COLORS.danger};
-    color: ${props => props.theme.COLORS.white};
-    transition: all .3s;
-    outline: none;
-    cursor: pointer;
-    display: flex; /* Para centralizar os ícones */
-    align-items: center;
-    justify-content: center;
+  padding: 6px 10px;
+  border-radius: 4px;
+  background-color: ${(props) =>
+    props.$variant === "warning"
+      ? props.theme.COLORS.warning
+      : props.theme.COLORS.danger};
+  color: ${(props) => props.theme.COLORS.white};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 
-    &:hover {
-        border-color: ${props => props.$variant === 'warning' ? props.theme.COLORS.warning : props.theme.COLORS.danger};
-        background-color: transparent;
-        color:  ${props => props.$variant === 'warning' ? props.theme.COLORS.warning : props.theme.COLORS.danger};
-    }
+  &:hover {
+    background-color: ${(props) =>
+      props.$variant === "warning"
+        ? props.theme.COLORS.warning
+        : props.theme.COLORS.warning};
+    border-color: ${(props) =>
+      props.$variant === "warning"
+        ? props.theme.COLORS.warning
+        : props.theme.COLORS.danger};
+  }
 `;
 
 export const EditIcon = styled(MdOutlineEdit)`
-    font-size: ${props => props.theme.FONT_SIZES.lg};
+  font-size: ${(props) => props.theme.FONT_SIZES.lg};
 `;
 
 export const DeleteIcon = styled(MdOutlineDeleteForever)`
