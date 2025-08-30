@@ -100,7 +100,7 @@ export const EditarUsuario = () => {
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Editar Usuário</HeaderTitle>
+                    <HeaderTitle>Editar</HeaderTitle>
                 </HeaderInfo>
                 <ActionButtons>
                     <Button

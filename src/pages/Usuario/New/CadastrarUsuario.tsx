@@ -59,7 +59,7 @@ export const CadastrarUsuario = () => {
         if (response.data) {
             setShowAlert({
                 type: "success",
-                message: "Usuário cadastrado com sucesso!",
+                message: "Colaborador cadastrado com sucesso!",
                 show: true,
             });
 
@@ -77,7 +77,7 @@ export const CadastrarUsuario = () => {
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Cadastrar Novo Usuário</HeaderTitle>
+                    <HeaderTitle>Cadastrar</HeaderTitle>
                 </HeaderInfo>
                 <ActionButtons>
                     <Button

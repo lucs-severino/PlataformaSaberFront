@@ -79,8 +79,8 @@ export const Usuarios = () => {
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Usuários</HeaderTitle> 
-                    <HeaderSubtitle>Consulte e gerencie todos os usuários e filtre sua busca por nome!</HeaderSubtitle>
+                    <HeaderTitle>Colaboradores</HeaderTitle> 
+                    <HeaderSubtitle>Consulte e gerencie todos os Colaboradores e filtre sua busca por nome!</HeaderSubtitle>
                 </HeaderInfo>
 
                 <HeaderSearch>

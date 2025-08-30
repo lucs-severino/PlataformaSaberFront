@@ -1,68 +1,98 @@
-import { useState } from "react"
-import { useAppSelector } from "../../../redux/hooks"
-import { useLocation } from "react-router-dom"
-import { Container, Footer, Header, HeaderIcon, HeaderLogo, Navigation, NavigationItem, NavigationItemIcon, NavigationItemLabel, User, UserAvatar, UserName , Link} from "./styles"
-import { Button } from "../../Button"
-import { MdOutlineDashboard, MdOutlineListAlt, MdPerson, MdPersonAdd } from "react-icons/md"
+import { useAppSelector } from "../../../redux/hooks";
+import { Link, useLocation } from "react-router-dom";
+import { 
+    Container, 
+    SidebarToggleButton,
+    Footer, 
+    Header, 
+    HeaderLogo, 
+    Navigation, 
+    NavigationItem,
+    NavigationItemIcon,
+    NavigationItemLabel, 
+    User,
+    UserAvatar,
+    UserName 
+} from "./styles";
+import { 
+    MdOutlineDashboard, 
+    MdOutlineListAlt, 
+    MdPersonAdd, 
+    MdOutlineKeyboardArrowLeft, 
+    MdOutlineKeyboardArrowRight 
+} from "react-icons/md";
 
 const menuItems = [
     { label: 'Dashboard', url: '/', icon: <MdOutlineDashboard /> },
-    { label: 'Usuarios', url: '/Usuarios', icon: <MdOutlineListAlt /> },
+    { label: 'Colaboradores', url: '/Usuarios', icon: <MdOutlineListAlt /> },
     { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd /> },
-]
+];
 
-export const Sidebar = () => {
-    const [isExpanded, setIsExpanded] = useState(true)
+interface SidebarProps {
+    isExpanded: boolean;
+    handleToggleExpand: () => void;
+    isMobile: boolean;
+}
 
-    const auth = useAppSelector(state => state.auth)
-    const { pathname } = useLocation()
+export const Sidebar = ({ isExpanded, handleToggleExpand, isMobile }: SidebarProps) => {
+    const auth = useAppSelector(state => state.auth);
+    const { pathname } = useLocation();
 
-    const handleToggleExpand = () => setIsExpanded(!isExpanded)
+    // Função para fechar o menu no mobile ao clicar em um link
+    const handleLinkClick = () => {
+        if (isMobile) {
+            handleToggleExpand();
+        }
+    };
 
     return (
         <Container $expanded={isExpanded}>
             <Header>
-                {isExpanded &&
+                {isExpanded && (
                     <Link to='/'>
                         <HeaderLogo
                             src="/logo.png"
                             alt="Logo Image"
+                            $expanded={isExpanded}
                         />
                     </Link>
-                }
-
-                <Button onClick={handleToggleExpand} borderRadius="rounded">
-                    <HeaderIcon />
-                </Button>
+                )}
+                <SidebarToggleButton onClick={handleToggleExpand} borderRadius="rounded">
+                    {isExpanded ? <MdOutlineKeyboardArrowLeft size={24}/> : <MdOutlineKeyboardArrowRight size={24}/>}
+                </SidebarToggleButton>
             </Header>
 
             <Navigation>
                 {menuItems.map((item, key) => (
-                    <Link to={item.url} key={key}>
-                        <NavigationItem $isActive={pathname == item.url}>
+                    <Link to={item.url} key={key} onClick={handleLinkClick}>
+                        <NavigationItem $isActive={pathname === item.url}>
                             <NavigationItemIcon>
                                 {item.icon}
                             </NavigationItemIcon>
-                            <NavigationItemLabel>
-                                {item.label}
-                            </NavigationItemLabel>
+                            {isExpanded && (
+                                <NavigationItemLabel>
+                                    {item.label}
+                                </NavigationItemLabel>
+                            )}
                         </NavigationItem>
                     </Link>
                 ))}
             </Navigation>
 
             <Footer>
-                <Link to='/account'>
-                    <User $isActive={pathname == '/account'}>
+                <Link to='/account' onClick={handleLinkClick}>
+                    <User>
                         <UserAvatar>
                             {auth.user?.name.slice(0, 2)}
                         </UserAvatar>
-                        <UserName>
-                            {auth.user?.name}
-                        </UserName>
+                        {isExpanded && (
+                            <UserName>
+                                {auth.user?.name}
+                            </UserName>
+                        )}
                     </User>
                 </Link>
             </Footer>
         </Container>
-    )
+    );
 }
