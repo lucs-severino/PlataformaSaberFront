@@ -1,4 +1,3 @@
-// src/pages/Agendamento/Novo/styles.ts
 import styled from 'styled-components';
 
 // --- Estilos copiados de outras páginas para consistência ---
@@ -12,8 +11,17 @@ export const Container = styled.div`
 export const Header = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center; /* Adicionado para garantir alinhamento vertical */
     padding: 40px 50px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
+
+    /* ===== CORREÇÃO PARA SMARTPHONE ===== */
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 25px 20px;
+    }
 `;
 
 export const HeaderInfo = styled.div`
@@ -39,6 +47,11 @@ export const ActionButtons = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 15px;
+
+    /* ===== CORREÇÃO PARA SMARTPHONE ===== */
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 `;
 
 // --- Estilos específicos para esta página (antigo modal) ---

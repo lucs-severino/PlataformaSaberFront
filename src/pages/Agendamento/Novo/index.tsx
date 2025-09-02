@@ -1,13 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { debounce } from 'lodash';
-
 import { Button } from '../../../components/Button';
 import TextInput from '../../../components/TextInput';
 import Alert from '../../../components/Alert';
-import type { Usuario, ApiProfessor } from '../../../@types/Usuario';
-
+import type { ApiProfessor, Usuario } from '../../../@types/Usuario';
 import {
     ActionButtons,
     Body,
@@ -25,12 +23,7 @@ import {
     TimeButton,
     TimeGrid
 } from './styles';
-import { criarAgendamento, getAlunos, getProfessores } from '../../../services/requests';
-
-const timeSlots = ["08:00", "09:00", "10:00", "11:00", "14:00", "15:00"];
-const agendamentosExistentes = [
-    { professorId: '1', data: '2025-09-10', hora: '09:00' },
-];
+import { criarAgendamento, getAlunos, getProfessores, getHorariosDisponiveis } from '../../../services/requests';
 
 export const NovoAgendamento = () => {
     const navigate = useNavigate();
@@ -52,8 +45,12 @@ export const NovoAgendamento = () => {
     const [selectedProfessor, setSelectedProfessor] = useState<{ label: string; value: string } | null>(null);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
-    
+    const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+
     const [showAlert, setShowAlert] = useState({ type: "success" as "success" | "error", message: "", show: false });
+
+    // 1. NOVO ESTADO PARA CONTROLAR O ENVIO
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -83,27 +80,38 @@ export const NovoAgendamento = () => {
 
     useEffect(() => { loadAlunos(1, ""); loadProfessores(1, ""); }, []);
 
-    // --- Handlers para eventos ---
+    useEffect(() => {
+        const fetchHorarios = async () => {
+            if (selectedProfessor && selectedDate) {
+                const response = await getHorariosDisponiveis(selectedProfessor.value, selectedDate);
+                if (response.data) {
+                    setAvailableTimeSlots(response.data.horarios);
+                } else {
+                    setAvailableTimeSlots([]);
+                }
+            }
+        };
+        fetchHorarios();
+    }, [selectedProfessor, selectedDate]);
+
     const handleAlunoInputChange = (inputValue: string) => { setAlunoSearch(inputValue); debouncedLoadAlunos(inputValue); };
     const handleAlunoMenuScrollToBottom = () => { if (!loadingAlunos && hasMoreAlunos) { const nextPage = alunoPage + 1; setAlunoPage(nextPage); loadAlunos(nextPage, alunoSearch); } };
     const handleProfessorInputChange = (inputValue: string) => { setProfessorSearch(inputValue); debouncedLoadProfessores(inputValue); };
     const handleProfessorMenuScrollToBottom = () => { if (!loadingProfessores && hasMoreProfessores) { const nextPage = professorPage + 1; setProfessorPage(nextPage); loadProfessores(nextPage, professorSearch); } };
-    
+
     const handleBack = () => setStep(step - 1);
-    
-    // --- FUNÇÃO handleConfirm ATUALIZADA ---
+
+    // 2. FUNÇÃO handleConfirm ATUALIZADA
     const handleConfirm = async () => {
-        // 1. Garante que todos os dados foram selecionados
+        if (isSubmitting) return; // Impede clique duplo
+
         if (!selectedAluno || !selectedProfessor || !selectedDate || !selectedTime) {
-            setShowAlert({
-                type: "error",
-                message: "Todos os campos do resumo devem ser preenchidos.",
-                show: true
-            });
+            setShowAlert({ type: "error", message: "Todos os campos do resumo devem ser preenchidos.", show: true });
             return;
         }
+        
+        setIsSubmitting(true); // Desabilita o botão
 
-        // 2. Monta o objeto de dados para enviar à API
         const agendamentoData = {
             alunoId: selectedAluno.value,
             professorId: selectedProfessor.value,
@@ -111,22 +119,18 @@ export const NovoAgendamento = () => {
             hora: selectedTime
         };
 
-        // 3. Chama a função da API para criar o agendamento
         const response = await criarAgendamento(agendamentoData);
 
-        // 4. Trata a resposta da API
         if (response.error) {
-            // Se o backend retornar um erro (ex: horário ocupado), exibe o alerta de erro
             setShowAlert({ type: "error", message: response.error, show: true });
+            setIsSubmitting(false); // Habilita o botão novamente em caso de erro
         } else {
-            // Se for sucesso, exibe o alerta de sucesso e redireciona o usuário
             setShowAlert({ type: "success", message: "Aula agendada com sucesso!", show: true });
-            setTimeout(() => {
-                navigate('/agendamento');
-            }, 1500);
+            setTimeout(() => { navigate('/'); }, 1500);
+            // Não precisa reabilitar o botão em caso de sucesso, pois a página será redirecionada
         }
     };
-    
+
     const handleNext = () => {
         if (step === 3 && (!selectedDate || selectedDate < today)) {
             setShowAlert({ type: 'error', message: 'A data do agendamento não pode ser anterior ao dia de hoje.', show: true });
@@ -141,19 +145,15 @@ export const NovoAgendamento = () => {
             case 2: return !!selectedProfessor;
             case 3: return !!selectedDate;
             case 4: return !!selectedTime;
+            case 5: return !!selectedAluno && !!selectedProfessor && !!selectedDate && !!selectedTime;
             default: return false;
         }
     };
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => { setSelectedDate(e.target.value); setSelectedTime(''); };
-    
+
     const alunoOptions = alunos.map(a => ({ label: `${a.nome} (${a.email})`, value: a.id.toString() }));
     const professorOptions = professores.map(p => ({ label: `${p.nome} (${p.email})`, value: p.id.toString() }));
-
-    const availableTimeSlots = useMemo(() => {
-        if (!selectedDate || !selectedProfessor) return [];
-        return timeSlots.filter(time => !agendamentosExistentes.some(a => a.data === selectedDate && a.hora === time && a.professorId === selectedProfessor.value));
-    }, [selectedDate, selectedProfessor]);
 
     return (
         <Container>
@@ -162,8 +162,12 @@ export const NovoAgendamento = () => {
                 <HeaderInfo><HeaderTitle>Agendar Nova Aula</HeaderTitle></HeaderInfo>
                 <ActionButtons>
                     <Button variant="secondary" onClick={handleBack} disabled={step === 1}>Voltar</Button>
-                    <Button onClick={step === 4 ? handleConfirm : handleNext} disabled={!isStepComplete(step)}>
-                        {step === 4 ? 'Confirmar' : 'Próximo'}
+                    {/* 3. BOTÃO ATUALIZADO */}
+                    <Button 
+                        onClick={step === 5 ? handleConfirm : handleNext} 
+                        disabled={!isStepComplete(step) || isSubmitting}
+                    >
+                        {step === 5 ? (isSubmitting ? 'Confirmando...' : 'Confirmar') : 'Próximo'}
                     </Button>
                 </ActionButtons>
             </Header>
@@ -173,49 +177,23 @@ export const NovoAgendamento = () => {
                         <Step active={step >= 1}>1</Step><StepLine active={step > 1} />
                         <Step active={step >= 2}>2</Step><StepLine active={step > 2} />
                         <Step active={step >= 3}>3</Step><StepLine active={step > 3} />
-                        <Step active={step >= 4}>4</Step>
+                        <Step active={step >= 4}>4</Step><StepLine active={step > 4} />
+                        <Step active={step >= 5}>5</Step>
                     </StepContainer>
 
-                    {step === 1 && (
-                        <FormGroup>
-                            <label>Selecione o Aluno</label>
-                            <Select options={alunoOptions} value={selectedAluno} onChange={setSelectedAluno} onInputChange={handleAlunoInputChange} onMenuScrollToBottom={handleAlunoMenuScrollToBottom} isLoading={loadingAlunos} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum aluno encontrado"} isClearable />
-                        </FormGroup>
-                    )}
+                    {step === 1 && (<FormGroup> <label>Selecione o Aluno</label> <Select options={alunoOptions} value={selectedAluno} onChange={setSelectedAluno} onInputChange={handleAlunoInputChange} onMenuScrollToBottom={handleAlunoMenuScrollToBottom} isLoading={loadingAlunos} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum aluno encontrado"} isClearable /> </FormGroup>)}
+                    {step === 2 && (<FormGroup> <label>Selecione o Professor</label> <Select options={professorOptions} value={selectedProfessor} onChange={setSelectedProfessor} onInputChange={handleProfessorInputChange} onMenuScrollToBottom={handleProfessorMenuScrollToBottom} isLoading={loadingProfessores} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum professor encontrado"} isClearable /> </FormGroup>)}
+                    {step === 3 && (<FormGroup> <TextInput label="Data da Aula" type="date" value={selectedDate} onChange={handleDateChange} borderRadius="sm" min={today} /> </FormGroup>)}
+                    {step === 4 && (<FormGroup> <label>Horário</label> <TimeGrid> {availableTimeSlots.map(time => (<TimeButton key={time} active={selectedTime === time} onClick={() => setSelectedTime(time)}>{time}</TimeButton>))} </TimeGrid> {selectedDate && availableTimeSlots.length === 0 && <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>Nenhum horário disponível para esta data.</p>} </FormGroup>)}
 
-                    {step === 2 && (
-                        <FormGroup>
-                            <label>Selecione o Professor</label>
-                            <Select options={professorOptions} value={selectedProfessor} onChange={setSelectedProfessor} onInputChange={handleProfessorInputChange} onMenuScrollToBottom={handleProfessorMenuScrollToBottom} isLoading={loadingProfessores} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum professor encontrado"} isClearable />
-                        </FormGroup>
-                    )}
-
-                    {step === 3 && (
-                        <FormGroup>
-                            <TextInput label="Data da Aula" type="date" value={selectedDate} onChange={handleDateChange} borderRadius="sm" min={today} />
-                        </FormGroup>
-                    )}
-                    
-                    {step === 4 && (
-                        <>
-                            <FormGroup>
-                                <label>Horário</label>
-                                <TimeGrid>
-                                    {availableTimeSlots.map(time => (<TimeButton key={time} active={selectedTime === time} onClick={() => setSelectedTime(time)}>{time}</TimeButton>))}
-                                </TimeGrid>
-                                {selectedDate && availableTimeSlots.length === 0 && <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>Nenhum horário disponível para esta data.</p>}
-                            </FormGroup>
-
-                            {isStepComplete(4) && (
-                                <Summary>
-                                    <h4>Resumo do Agendamento</h4>
-                                    <SummaryItem><span>Aluno:</span> {selectedAluno?.label.split(' (')[0]}</SummaryItem>
-                                    <SummaryItem><span>Professor:</span> {selectedProfessor?.label.split(' (')[0]}</SummaryItem>
-                                    <SummaryItem><span>Data:</span> {new Date(selectedDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</SummaryItem>
-                                    <SummaryItem><span>Hora:</span> {selectedTime}</SummaryItem>
-                                </Summary>
-                            )}
-                        </>
+                    {step === 5 && isStepComplete(4) && (
+                        <Summary>
+                            <h4>Resumo do Agendamento</h4>
+                            <SummaryItem><span>Aluno:</span> {selectedAluno?.label.split(' (')[0]}</SummaryItem>
+                            <SummaryItem><span>Professor:</span> {selectedProfessor?.label.split(' (')[0]}</SummaryItem>
+                            <SummaryItem><span>Data:</span> {new Date(selectedDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</SummaryItem>
+                            <SummaryItem><span>Hora:</span> {selectedTime}</SummaryItem>
+                        </Summary>
                     )}
                 </Form>
             </Body>

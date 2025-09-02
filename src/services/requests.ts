@@ -4,7 +4,7 @@ import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, Ap
 import { formatDate } from "../utils/formatDate"
 import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
-import type { NovoAgendamentoData } from "../@types/Agendamento"
+import type { ApiGetHorariosDisponiveis, NovoAgendamentoData } from "../@types/Agendamento"
 
 // Auth
 export const signUp = async (name: string, email: string, password: string) =>{
@@ -139,7 +139,7 @@ export const getAlunos = async (page: number, nome?: string) => {
         params.nome = nome;
     }
 
-  
+
     return await api<ApiGetAlunos>({
         endpoint: 'alunos',
         data: params
@@ -164,5 +164,12 @@ export const criarAgendamento = async (data: NovoAgendamentoData) => {
         endpoint: 'agendamentos',
         method: 'POST',
         data: data
+    });
+}
+
+export const getHorariosDisponiveis = async (professorId: string, data: string) => {
+    return await api<ApiGetHorariosDisponiveis>({
+        endpoint: `agendamentos/disponiveis/${professorId}`,
+        data: { data }
     });
 }

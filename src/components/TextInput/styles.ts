@@ -46,7 +46,17 @@ export const Input = styled.input<{ $borderRadius?: "sm" | "md" }>`
     border-color: ${(props) => props.theme.COLORS.inputBorderColorFocus};
   }
 
-  /* CORREÇÃO AQUI ↓↓↓ */
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    filter: invert(1);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,

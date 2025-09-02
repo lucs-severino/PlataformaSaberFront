@@ -30,3 +30,7 @@ export type NovoAgendamentoData = {
     data: string; // Formato "AAAA-MM-DD"
     hora: string; // Formato "HH:mm"
 }
+
+export type ApiGetHorariosDisponiveis = {
+    horarios: string[];
+};
