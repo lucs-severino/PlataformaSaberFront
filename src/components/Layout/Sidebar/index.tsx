@@ -1,29 +1,33 @@
 import { useAppSelector } from "../../../redux/hooks";
 import { Link, useLocation } from "react-router-dom";
-import { 
-    Container, 
+import {
+    Container,
     SidebarToggleButton,
-    Footer, 
-    Header, 
-    HeaderLogo, 
-    Navigation, 
+    Footer,
+    Header,
+    HeaderLogo,
+    Navigation,
     NavigationItem,
     NavigationItemIcon,
-    NavigationItemLabel, 
+    NavigationItemLabel,
     User,
     UserAvatar,
-    UserName 
+    UserName
 } from "./styles";
-import { 
-    MdOutlineDashboard, 
-    MdOutlineListAlt, 
-    MdPersonAdd, 
-    MdOutlineKeyboardArrowLeft, 
-    MdOutlineKeyboardArrowRight 
+import {
+    MdOutlineDashboard,
+    MdOutlineListAlt,
+    MdPersonAdd,
+    MdOutlineKeyboardArrowLeft,
+    MdOutlineKeyboardArrowRight,
+    MdOutlineCalendarToday,
+    MdAddCircleOutline
 } from "react-icons/md";
 
 const menuItems = [
     { label: 'Dashboard', url: '/', icon: <MdOutlineDashboard /> },
+    { label: 'Agendamento', url: '/agendamento', icon: <MdOutlineCalendarToday /> },
+    { label: 'Nova Aula', url: '/agendamento/novo', icon: <MdAddCircleOutline /> },
     { label: 'Colaboradores', url: '/Usuarios', icon: <MdOutlineListAlt /> },
     { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd /> },
 ];
@@ -58,7 +62,7 @@ export const Sidebar = ({ isExpanded, handleToggleExpand, isMobile }: SidebarPro
                     </Link>
                 )}
                 <SidebarToggleButton onClick={handleToggleExpand} borderRadius="rounded">
-                    {isExpanded ? <MdOutlineKeyboardArrowLeft size={24}/> : <MdOutlineKeyboardArrowRight size={24}/>}
+                    {isExpanded ? <MdOutlineKeyboardArrowLeft size={24} /> : <MdOutlineKeyboardArrowRight size={24} />}
                 </SidebarToggleButton>
             </Header>
 

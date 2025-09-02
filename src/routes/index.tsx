@@ -10,6 +10,8 @@ import { NotFound } from "../pages/NotFound"
 import { Usuarios } from "../pages/Usuario/Usuarios"
 import { EditarUsuario } from "../pages/Usuario/Edit/EditarUsuario"
 import { CadastrarUsuario } from "../pages/Usuario/New/CadastrarUsuario"
+import { Agendamento } from "../pages/Agendamento/Agendamentos"
+import { NovoAgendamento } from "../pages/Agendamento/Novo"
 
 export const MainRoutes = () => {
     return (
@@ -30,13 +32,13 @@ export const MainRoutes = () => {
                     element={<Home />}
                 />
 
-                <Route 
+                <Route
                     path="/account"
                     element={<Account />}
                 />
-                
+
                 <Route path="/transacoes">
-                    <Route 
+                    <Route
                         index
                         element={<Transactions />}
                     />
@@ -49,8 +51,18 @@ export const MainRoutes = () => {
                         element={<EditTransaction />}
                     />
                 </Route>
+                <Route path="/agendamento">
+                    <Route
+                        index
+                        element={<Agendamento />}
+                    />
+                    <Route
+                        path="novo"
+                        element={<NovoAgendamento />}
+                    />
+                </Route>
                 <Route path="Usuarios/">
-                    <Route 
+                    <Route
                         index
                         element={<Usuarios />}
                     />
@@ -62,14 +74,14 @@ export const MainRoutes = () => {
                         path=":id/editar"
                         element={<EditarUsuario />}
                     />
-                      <Route
+                    <Route
                         path="Cadastrar"
                         element={<CadastrarUsuario />}
                     />
                 </Route>
             </Route>
 
-            <Route 
+            <Route
                 path="*"
                 element={<NotFound />}
             />

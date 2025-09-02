@@ -1,9 +1,10 @@
 import type { ApiDeleteUser, ApiGetUser, ApiSignIn, ApiSignUp, ApiUpdateUser } from "../@types/Auth"
 import type { ApiDeleteTransaction, ApiGetDashboard, ApiGetTransaction, ApiGetTransactions, ApiNewTransaction, ApiUpdateTransaction, TransactionStatus } from "../@types/Transaction"
-import type { TipoPessoa, UsuarioStatus, ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario } from "../@types/Usuario"
+import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario, ApiGetAlunos, ApiGetProfessores } from "../@types/Usuario"
 import { formatDate } from "../utils/formatDate"
 import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
+import type { NovoAgendamentoData } from "../@types/Agendamento"
 
 // Auth
 export const signUp = async (name: string, email: string, password: string) =>{
@@ -129,4 +130,39 @@ export const getDashboard = async(month: string, year: string) => {
     }
 
     return { balance, pending_transactions, completed_transactions}
+}
+
+/// Alunos
+export const getAlunos = async (page: number, nome?: string) => {
+    const params: { page: number; nome?: string } = { page };
+    if (nome && nome.trim() !== '') {
+        params.nome = nome;
+    }
+
+  
+    return await api<ApiGetAlunos>({
+        endpoint: 'alunos',
+        data: params
+    });
+}
+
+// Professores
+export const getProfessores = async (page: number, nome?: string) => {
+    const params: { page: number; nome?: string } = { page };
+    if (nome && nome.trim() !== '') {
+        params.nome = nome;
+    }
+
+    return await api<ApiGetProfessores>({
+        endpoint: 'professores',
+        data: params
+    });
+}
+
+export const criarAgendamento = async (data: NovoAgendamentoData) => {
+    return await api({
+        endpoint: 'agendamentos',
+        method: 'POST',
+        data: data
+    });
 }

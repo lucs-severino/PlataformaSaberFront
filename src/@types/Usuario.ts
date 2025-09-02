@@ -37,3 +37,36 @@ export type ApiUpdateUsuario = Usuario;
 export type ApiDeleteUsuario = {
     success: boolean;
 }
+
+export type ApiGetAlunos = {
+    alunos: {
+        itemsReceived: number,
+        curPage: number,
+        nextPage?: string,
+        prevPage?: string,
+        offset: number,
+        itemsTotal: number,
+        pageTotal: number,
+        items: Usuario[] 
+    }
+}
+
+export type ApiProfessor = {
+    id: string;
+    nome: string;
+    email: string;
+    cpf: string;
+    dataNascimento: string | null;
+    status: string;
+}
+
+export type ApiGetProfessores = {
+    professores: {
+        itemsReceived: number,
+        curPage: number,
+        itemsTotal: number,
+        pageTotal: number,
+        items: ApiProfessor[]
+    }
+}
+

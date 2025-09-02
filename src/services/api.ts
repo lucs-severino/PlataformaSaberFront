@@ -17,8 +17,11 @@ export const api = async <TypeResponse>({
         baseURL: import.meta.env.VITE_API_BASE_URL
     })
 
-    if(withAuth){
-        instance.defaults.headers.common['Authorization'] = localStorage.getItem(import.meta.env.VITE_LOCAL_STOREGE_AUTH_KEY)
+    if (withAuth) {
+        const token = localStorage.getItem(import.meta.env.VITE_LOCAL_STOREGE_AUTH_KEY);
+        if (token) {
+            instance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
     }
 
     try{
