@@ -49,7 +49,6 @@ export const NovoAgendamento = () => {
 
     const [showAlert, setShowAlert] = useState({ type: "success" as "success" | "error", message: "", show: false });
 
-    // 1. NOVO ESTADO PARA CONTROLAR O ENVIO
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const today = new Date().toISOString().split('T')[0];
@@ -101,16 +100,15 @@ export const NovoAgendamento = () => {
 
     const handleBack = () => setStep(step - 1);
 
-    // 2. FUNÇÃO handleConfirm ATUALIZADA
     const handleConfirm = async () => {
-        if (isSubmitting) return; // Impede clique duplo
+        if (isSubmitting) return; 
 
         if (!selectedAluno || !selectedProfessor || !selectedDate || !selectedTime) {
             setShowAlert({ type: "error", message: "Todos os campos do resumo devem ser preenchidos.", show: true });
             return;
         }
         
-        setIsSubmitting(true); // Desabilita o botão
+        setIsSubmitting(true); 
 
         const agendamentoData = {
             alunoId: selectedAluno.value,
@@ -123,11 +121,11 @@ export const NovoAgendamento = () => {
 
         if (response.error) {
             setShowAlert({ type: "error", message: response.error, show: true });
-            setIsSubmitting(false); // Habilita o botão novamente em caso de erro
+            setIsSubmitting(false);
         } else {
             setShowAlert({ type: "success", message: "Aula agendada com sucesso!", show: true });
             setTimeout(() => { navigate('/'); }, 1500);
-            // Não precisa reabilitar o botão em caso de sucesso, pois a página será redirecionada
+         
         }
     };
 
@@ -162,7 +160,6 @@ export const NovoAgendamento = () => {
                 <HeaderInfo><HeaderTitle>Agendar Nova Aula</HeaderTitle></HeaderInfo>
                 <ActionButtons>
                     <Button variant="secondary" onClick={handleBack} disabled={step === 1}>Voltar</Button>
-                    {/* 3. BOTÃO ATUALIZADO */}
                     <Button 
                         onClick={step === 5 ? handleConfirm : handleNext} 
                         disabled={!isStepComplete(step) || isSubmitting}

@@ -10,8 +10,8 @@ import { NotFound } from "../pages/NotFound"
 import { Usuarios } from "../pages/Usuario/Usuarios"
 import { EditarUsuario } from "../pages/Usuario/Edit/EditarUsuario"
 import { CadastrarUsuario } from "../pages/Usuario/New/CadastrarUsuario"
-import { Agendamento } from "../pages/Agendamento/Agendamentos"
 import { NovoAgendamento } from "../pages/Agendamento/Novo"
+import { Agendamentos } from "../pages/Agendamento/Agendamentos"
 
 export const MainRoutes = () => {
     return (
@@ -53,8 +53,8 @@ export const MainRoutes = () => {
                 </Route>
                 <Route path="/agendamento">
                     <Route
-                        index
-                        element={<Agendamento />}
+                        index 
+                        element={<Agendamentos />}
                     />
                     <Route
                         path="novo"

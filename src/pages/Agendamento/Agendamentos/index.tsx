@@ -1,130 +1,147 @@
-// src/pages/Agendamento/index.tsx
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTheme } from "styled-components";
-import { Button } from "../../../components/Button";
-import { MdAdd, MdCalendarToday, MdPerson, MdSchool } from "react-icons/md";
-import {
-    Container,
-    Header,
-    HeaderInfo,
-    HeaderTitle,
-    HeaderSubtitle,
-    Body,
-    StatsGrid,
-    StatCard,
-    StatCardHeader,
-    StatCardTitle,
-    StatCardContent,
-    StatCardValue,
-    StatCardDescription,
-    UpcomingClasses,
-    ClassItem,
-    ClassItemInfo,
-    ClassItemDetails,
-    Badge,
+import { ScaleLoader } from "react-spinners";
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md";
+
+import type { AgendamentoLista, AgendamentoStatus } from "../../../@types/Agendamento";
+import { getMockedAgendamentos } from "../../../services/mock";
+import { AgendamentosTable } from "../../../components/AgendamentosTable";
+import TextInput from "../../../components/TextInput";
+import SelectInput from "../../../components/SelectInput";
+import Alert from "../../../components/Alert";
+
+import { 
+    Body, 
+    Container, 
+    Empty, 
+    EmptyIcon, 
+    EmptyLabel, 
+    Header, 
+    HeaderInfo, 
+    HeaderSubtitle, 
+    HeaderTitle, 
+    Loading, 
+    Pagination, 
+    PaginationItem,
+    Filters
 } from "./styles";
-import type { Aula } from "../../../@types/Agendamento";
-import { useNavigate } from "react-router-dom";
 
-// Mock de dados para as aulas agendadas
-const upcomingClasses: Aula[] = [
-    {
-        id: 1,
-        aluno: "Ana Silva",
-        professor: "Prof. João Santos",
-        disciplina: "Matemática",
-        data: "2024-08-15",
-        hora: "14:00",
-        status: "confirmed",
-    },
-    {
-        id: 2,
-        aluno: "Carlos Oliveira",
-        professor: "Prof. Maria Costa",
-        disciplina: "Física",
-        data: "2024-08-15",
-        hora: "16:00",
-        status: "pending",
-    },
-];
+export const Agendamentos = () => {
+    const [loading, setLoading] = useState(true);
+    const [agendamentos, setAgendamentos] = useState<AgendamentoLista[]>([]);
+    const [showAlert, setShowAlert] = useState({ type: "success" as "success"|"error", message: "", show: false });
+    
+    // Estados para paginação
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
 
-export const Agendamento = () => {
-    const navigate = useNavigate(); // 3. Inicialize o hook
+    // Estados para os filtros
+    const [filters, setFilters] = useState({
+        nomeAluno: '',
+        nomeProfessor: '',
+        status: ''
+    });
+
     const theme = useTheme();
 
+    const statusOptions = [
+        { label: "Todos os Status", value: "" },
+        { label: "Agendado", value: "Agendado" },
+        { label: "Confirmado", value: "Confirmado" },
+        { label: "Realizado", value: "Realizado" },
+        { label: "Cancelado", value: "Cancelado" },
+    ];
+
+    const fetchAgendamentos = async () => {
+        setLoading(true);
+        const response = await getMockedAgendamentos(currentPage, filters);
+        setAgendamentos(response.items);
+        setTotalPages(response.pageTotal);
+        setLoading(false);
+    };
+
+    // Efeito para buscar dados quando a página ou os filtros mudam
+    useEffect(() => {
+        fetchAgendamentos();
+    }, [currentPage, filters]);
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { name?: string; value: string } }) => {
+        const { name, value } = e.target;
+        setFilters(prev => ({ ...prev, [name!]: value }));
+        setCurrentPage(1); // Reseta para a primeira página ao aplicar um filtro
+    };
+
+    // Funções de ação (apenas exibem alertas por enquanto)
+    const handleConfirm = (id: string) => {
+        setShowAlert({ type: "success", message: `Agendamento #${id} confirmado!`, show: true });
+    };
+    
+    const handleCancel = (id: string) => {
+        const motivo = prompt("Por favor, insira o motivo do cancelamento:");
+        if (motivo) {
+            setShowAlert({ type: "success", message: `Agendamento #${id} cancelado. Motivo: ${motivo}`, show: true });
+        }
+    };
+    
+    const handleConclude = (id: string) => {
+        setShowAlert({ type: "success", message: `Aula #${id} marcada como realizada!`, show: true });
+    };
 
     return (
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Sistema de Agendamento</HeaderTitle>
-                    <HeaderSubtitle>Gerencie aulas e horários de forma simples</HeaderSubtitle>
+                    <HeaderTitle>Gerenciar Aulas</HeaderTitle>
+                    <HeaderSubtitle>Consulte, filtre e gerencie todas as aulas agendadas.</HeaderSubtitle>
                 </HeaderInfo>
-                <Button onClick={() => navigate('/agendamento/novo')} borderRadius="sm" size="md">
-                    <MdAdd size={20} style={{ marginRight: '8px' }} />
-                    Nova Aula
-                </Button>
+
+                <Filters>
+                    <TextInput name="nomeAluno" placeholder="Filtrar por aluno..." onChange={handleFilterChange} />
+                    <TextInput name="nomeProfessor" placeholder="Filtrar por professor..." onChange={handleFilterChange} />
+                    <SelectInput name="status" options={statusOptions} onChange={handleFilterChange} value={filters.status} />
+                </Filters>
             </Header>
 
-            <Body>
-                <StatsGrid>
-                    {/* Cards de Estatísticas */}
-                    <StatCard>
-                        <StatCardHeader>
-                            <StatCardTitle>Aulas Hoje</StatCardTitle>
-                            <MdCalendarToday />
-                        </StatCardHeader>
-                        <StatCardContent>
-                            <StatCardValue>3</StatCardValue>
-                            <StatCardDescription>2 confirmadas, 1 pendente</StatCardDescription>
-                        </StatCardContent>
-                    </StatCard>
-                    <StatCard>
-                        <StatCardHeader>
-                            <StatCardTitle>Professores Ativos</StatCardTitle>
-                            <MdSchool />
-                        </StatCardHeader>
-                        <StatCardContent>
-                            <StatCardValue>12</StatCardValue>
-                            <StatCardDescription>Disponíveis para agendamento</StatCardDescription>
-                        </StatCardContent>
-                    </StatCard>
-                    <StatCard>
-                        <StatCardHeader>
-                            <StatCardTitle>Alunos Cadastrados</StatCardTitle>
-                            <MdPerson />
-                        </StatCardHeader>
-                        <StatCardContent>
-                            <StatCardValue>48</StatCardValue>
-                            <StatCardDescription>+5 este mês</StatCardDescription>
-                        </StatCardContent>
-                    </StatCard>
-                </StatsGrid>
+            <Alert type={showAlert.type} title={showAlert.message} show={showAlert.show} setShow={show => setShowAlert({ ...showAlert, show })} />
 
-                <UpcomingClasses>
-                    <h2>Próximas Aulas</h2>
-                    {upcomingClasses.map((classItem) => (
-                        <ClassItem key={classItem.id}>
-                            <ClassItemInfo>
-                                <span>{classItem.aluno}</span>
-                                <small>{classItem.professor}</small>
-                            </ClassItemInfo>
-                            <ClassItemDetails>
-                                <Badge>{classItem.disciplina}</Badge>
-                                <span>{new Date(classItem.data).toLocaleDateString("pt-BR")}</span>
-                                <span>{classItem.hora}</span>
-                                <Badge
-                                    style={{
-                                        backgroundColor: classItem.status === "confirmed" ? theme.COLORS.success : theme.COLORS.warning,
-                                        color: theme.COLORS.white,
-                                    }}
-                                >
-                                    {classItem.status === "confirmed" ? "Confirmada" : "Pendente"}
-                                </Badge>
-                            </ClassItemDetails>
-                        </ClassItem>
-                    ))}
-                </UpcomingClasses>
+            <Body>
+                {loading ? (
+                    <Loading>
+                        <ScaleLoader color={theme.COLORS.primary} />
+                    </Loading>
+                ) : agendamentos.length === 0 ? (
+                    <Empty>
+                        <EmptyIcon />
+                        <EmptyLabel>Nenhum agendamento encontrado para os filtros selecionados.</EmptyLabel>
+                    </Empty>
+                ) : (
+                    <>
+                        <AgendamentosTable
+                            data={agendamentos}
+                            onConfirm={handleConfirm}
+                            onCancel={handleCancel}
+                            onConclude={handleConclude}
+                        />
+
+                        {totalPages > 1 && (
+                            <Pagination>
+                                <PaginationItem $isLeft onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+                                    <MdOutlineKeyboardArrowLeft size={21} />
+                                </PaginationItem>
+
+                                {[...Array(totalPages)].map((_, index) => (
+                                    <PaginationItem key={index} $active={index + 1 === currentPage} onClick={() => setCurrentPage(index + 1)}>
+                                        {index + 1}
+                                    </PaginationItem>
+                                ))}
+
+                                <PaginationItem $isRight onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                                    <MdOutlineKeyboardArrowRight size={21} />
+                                </PaginationItem>
+                            </Pagination>
+                        )}
+                    </>
+                )}
             </Body>
         </Container>
     );

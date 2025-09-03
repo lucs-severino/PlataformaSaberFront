@@ -1,104 +1,124 @@
-// src/pages/Agendamento/styles.ts
+import { MdSearch } from 'react-icons/md';
+import { TbTableOff } from 'react-icons/tb';
 import styled from 'styled-components';
 
 export const Container = styled.div`
-    padding: 30px 50px;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
 `;
+
+export const Loading = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+`;
+
 export const Header = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
+    padding: 40px 50px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
-`;
-export const HeaderInfo = styled.div``;
-export const HeaderTitle = styled.h1`
-    font-size: ${props => props.theme.FONT_SIZES.xl};
-    font-weight: 800;
-    color: ${props => props.theme.COLORS.textColor500};
-`;
-export const HeaderSubtitle = styled.p`
-    color: ${props => props.theme.COLORS.textColor400};
-`;
-export const Body = styled.div`
-    padding-top: 30px;
-`;
-export const StatsGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-`;
-export const StatCard = styled.div`
-    background-color: ${props => props.theme.COLORS.background};
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    border-radius: 8px;
-    padding: 20px;
-`;
-export const StatCardHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: ${props => props.theme.COLORS.textColor400};
-`;
-export const StatCardTitle = styled.h3`
-    font-size: ${props => props.theme.FONT_SIZES.sm};
-    font-weight: 600;
-`;
-export const StatCardContent = styled.div``;
-export const StatCardValue = styled.p`
-    font-size: 2rem;
-    font-weight: 800;
-    color: ${props => props.theme.COLORS.primary};
-`;
-export const StatCardDescription = styled.p`
-    font-size: 0.8rem;
-    color: ${props => props.theme.COLORS.textColor400};
-`;
-export const UpcomingClasses = styled.div`
-    h2 {
-        font-size: ${props => props.theme.FONT_SIZES.lg};
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: ${props => props.theme.COLORS.textColor500};
+
+    @media (max-width: 992px) {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 20px;
     }
 `;
-export const ClassItem = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    border-radius: 8px;
-    margin-bottom: 10px;
-    &:hover {
-        background-color: ${props => props.theme.COLORS.tableRowHover};
-    }
-`;
-export const ClassItemInfo = styled.div`
+
+export const HeaderInfo = styled.div`
     display: flex;
     flex-direction: column;
-    span {
-        font-weight: 600;
-    }
-    small {
-        color: ${props => props.theme.COLORS.textColor400};
+`;
+
+export const HeaderTitle = styled.span`
+    font-size: ${props => props.theme.FONT_SIZES.xl};
+    color: ${props => props.theme.COLORS.textColor500};
+    font-weight: 800;
+`;
+
+export const HeaderSubtitle = styled.span`
+    font-size: ${props => props.theme.FONT_SIZES.sm};
+    color: ${props => props.theme.COLORS.textColor500};
+`;
+
+export const Filters = styled.div`
+    display: flex;
+    gap: 15px;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        width: 100%;
     }
 `;
-export const ClassItemDetails = styled.div`
+
+export const Body = styled.div`
+    padding: 30px 50px 60px 50px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) {
+       padding: 20px 20px 40px 20px;
+    }
+`;
+
+export const Empty = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme.COLORS.textColor400};
+    flex: 1;
+`;
+
+export const EmptyLabel = styled.span`
+    font-size: ${props => props.theme.FONT_SIZES.sm};
+    font-weight: 700;
+`;
+
+export const EmptyIcon = styled(TbTableOff)`
+    font-size: ${props => props.theme.FONT_SIZES.xxl};
+`;
+
+export const Pagination = styled.div`
     display: flex;
     align-items: center;
-    gap: 15px;
-    font-size: ${props => props.theme.FONT_SIZES.sm};
+    margin-top: 20px;
+    justify-content: center;
+    
+    @media (max-width: 768px) {
+        flex-wrap: wrap; 
+        gap: 5px; 
+    }
 `;
-export const Badge = styled.span`
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    background-color: ${props => props.theme.COLORS.primaryBackgroundExtraLight};
-    color: ${props => props.theme.COLORS.primary};
+
+export const PaginationItem = styled.button<{ $active?: boolean, $isRight?: boolean, $isLeft?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 50px;
+    background-color: ${props => props.$active ? props.theme.COLORS.primary : 'transparent'};
+    color: ${props => props.$active ? props.theme.COLORS.buttonColor : props.theme.COLORS.textColor400};
+    border: 1px solid ${props => props.$active ? props.theme.COLORS.primary : props.theme.COLORS.borderColor};
+    border-radius: ${props => props.$isLeft ? '5px 0 0 5px' : props.$isRight ? '0 5px 5px 0' : '0px'};
+    outline: none;
+    transition: all .2s;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+        background-color: ${props => props.theme.COLORS.buttonHover};
+        color: ${props => props.theme.COLORS.buttonColor};
+        border-color: ${props => props.theme.COLORS.buttonHover};
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
 `;

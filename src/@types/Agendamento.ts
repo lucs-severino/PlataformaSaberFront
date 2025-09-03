@@ -34,3 +34,20 @@ export type NovoAgendamentoData = {
 export type ApiGetHorariosDisponiveis = {
     horarios: string[];
 };
+
+export type AgendamentoStatus = "Agendado" | "Confirmado" | "Realizado" | "Cancelado";
+
+export type AgendamentoLista = {
+    id: string;
+    nomeAluno: string;
+    nomeProfessor: string;
+    dataHora: string;
+    status: AgendamentoStatus;
+};
+
+export type ApiGetAgendamentos = {
+    items: AgendamentoLista[];
+    itemsTotal: number;
+    pageTotal: number;
+    curPage: number;
+};
