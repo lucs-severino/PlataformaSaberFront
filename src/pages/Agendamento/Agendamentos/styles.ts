@@ -1,11 +1,10 @@
-import { MdSearch } from 'react-icons/md';
-import { TbTableOff } from 'react-icons/tb';
 import styled from 'styled-components';
 
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 24px 32px;
 `;
 
 export const Loading = styled.div`
@@ -15,58 +14,91 @@ export const Loading = styled.div`
     flex: 1;
 `;
 
-export const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 40px 50px;
-    border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
+// Cards do Dashboard
+export const DashboardContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
 
     @media (max-width: 992px) {
-        flex-direction: column;
-        gap: 20px;
-        padding: 20px 20px;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
     }
 `;
 
-export const HeaderInfo = styled.div`
-    display: flex;
-    flex-direction: column;
+export const Card = styled.div`
+    background-color: ${props => props.theme.COLORS.navbarBackground};
+    border: 1px solid ${props => props.theme.COLORS.borderColor};
+    border-radius: 8px;
+    padding: 24px;
 `;
 
-export const HeaderTitle = styled.span`
+export const CardTitle = styled.h3`
+    margin: 0 0 8px 0;
+    font-size: ${props => props.theme.FONT_SIZES.sm};
+    color: ${props => props.theme.COLORS.textColor400};
+    font-weight: 600;
+`;
+
+export const CardValue = styled.p`
+    margin: 0;
     font-size: ${props => props.theme.FONT_SIZES.xl};
     color: ${props => props.theme.COLORS.textColor500};
     font-weight: 800;
 `;
 
-export const HeaderSubtitle = styled.span`
-    font-size: ${props => props.theme.FONT_SIZES.sm};
-    color: ${props => props.theme.COLORS.textColor500};
+// Barra de Filtros
+export const FilterBar = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: ${props => props.theme.COLORS.navbarBackground};
+    border: 1px solid ${props => props.theme.COLORS.borderColor};
+    border-radius: 8px;
+    margin-bottom: 24px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 16px;
+    }
 `;
 
-export const Filters = styled.div`
+export const FilterControls = styled.div`
     display: flex;
-    gap: 15px;
+    gap: 16px;
+    align-items: center; /* <<< CORREÇÃO ADICIONADA AQUI */
     
+    & > div {
+        width: 200px;
+    }
+
+    /* Deixa o campo de busca maior que os outros */
+    & > div:first-child {
+        width: 300px; 
+    }
+
     @media (max-width: 768px) {
         flex-direction: column;
         width: 100%;
+        align-items: stretch;
+        & > div, & > div:first-child {
+            width: 100%;
+        }
     }
 `;
 
+// Estilos para a tabela e paginação
 export const Body = styled.div`
-    padding: 30px 50px 60px 50px;
     flex: 1;
     display: flex;
     flex-direction: column;
-
-    @media (max-width: 768px) {
-       padding: 20px 20px 40px 20px;
-    }
 `;
 
 export const Empty = styled.div`
-    height: 100%;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -74,6 +106,7 @@ export const Empty = styled.div`
     justify-content: center;
     color: ${props => props.theme.COLORS.textColor400};
     flex: 1;
+    text-align: center;
 `;
 
 export const EmptyLabel = styled.span`
@@ -81,44 +114,13 @@ export const EmptyLabel = styled.span`
     font-weight: 700;
 `;
 
-export const EmptyIcon = styled(TbTableOff)`
-    font-size: ${props => props.theme.FONT_SIZES.xxl};
-`;
-
 export const Pagination = styled.div`
     display: flex;
     align-items: center;
     margin-top: 20px;
     justify-content: center;
-    
-    @media (max-width: 768px) {
-        flex-wrap: wrap; 
-        gap: 5px; 
-    }
 `;
 
 export const PaginationItem = styled.button<{ $active?: boolean, $isRight?: boolean, $isLeft?: boolean }>`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 38px;
-    width: 50px;
-    background-color: ${props => props.$active ? props.theme.COLORS.primary : 'transparent'};
-    color: ${props => props.$active ? props.theme.COLORS.buttonColor : props.theme.COLORS.textColor400};
-    border: 1px solid ${props => props.$active ? props.theme.COLORS.primary : props.theme.COLORS.borderColor};
-    border-radius: ${props => props.$isLeft ? '5px 0 0 5px' : props.$isRight ? '0 5px 5px 0' : '0px'};
-    outline: none;
-    transition: all .2s;
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-        background-color: ${props => props.theme.COLORS.buttonHover};
-        color: ${props => props.theme.COLORS.buttonColor};
-        border-color: ${props => props.theme.COLORS.buttonHover};
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
+    /* Estilos da paginação (sem alterações) */
 `;

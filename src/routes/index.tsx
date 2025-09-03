@@ -2,9 +2,6 @@ import { Route, Routes } from "react-router-dom"
 import { Auth } from "../pages/Auth"
 import { Layout } from "../components/Layout"
 import { Home } from "../pages/Home"
-import { NewTransaction } from "../pages/Transaction/New"
-import { EditTransaction } from "../pages/Transaction/Edit"
-import { Transactions } from "../pages/Transaction/Transactions"
 import { Account } from "../pages/Account"
 import { NotFound } from "../pages/NotFound"
 import { Usuarios } from "../pages/Usuario/Usuarios"
@@ -36,21 +33,6 @@ export const MainRoutes = () => {
                     path="/account"
                     element={<Account />}
                 />
-
-                <Route path="/transacoes">
-                    <Route
-                        index
-                        element={<Transactions />}
-                    />
-                    <Route
-                        path="nova"
-                        element={<NewTransaction />}
-                    />
-                    <Route
-                        path=":id/editar"
-                        element={<EditTransaction />}
-                    />
-                </Route>
                 <Route path="/agendamento">
                     <Route
                         index 
@@ -65,10 +47,6 @@ export const MainRoutes = () => {
                     <Route
                         index
                         element={<Usuarios />}
-                    />
-                    <Route
-                        path="nova"
-                        element={<NewTransaction />}
                     />
                     <Route
                         path=":id/editar"

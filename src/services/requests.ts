@@ -4,7 +4,7 @@ import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, Ap
 import { formatDate } from "../utils/formatDate"
 import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
-import type { ApiGetHorariosDisponiveis, NovoAgendamentoData } from "../@types/Agendamento"
+import type { AgendamentoDetalhe, ApiGetAgendamentos, ApiGetHorariosDisponiveis, DashboardData, NovoAgendamentoData } from "../@types/Agendamento"
 
 // Auth
 export const signUp = async (name: string, email: string, password: string) =>{
@@ -173,3 +173,25 @@ export const getHorariosDisponiveis = async (professorId: string, data: string) 
         data: { data }
     });
 }
+
+
+// ...
+export const getDashboardAgendamentos = async () => {
+    return await api<DashboardData>({ endpoint: 'agendamentos/dashboard-cards' });
+};
+
+export const getAgendamentos = async (page: number, filters: { nome?: string, status?: string, data?: string }) => {
+    return await api<ApiGetAgendamentos>({ endpoint: 'agendamentos', data: { page, ...filters } });
+};
+
+export const getAgendamentoDetalhes = async (id: string) => {
+    return await api<AgendamentoDetalhe>({ endpoint: `agendamentos/${id}/detalhes` });
+};
+
+export const cancelarAgendamento = async (id: string, motivo: string) => {
+    return await api({ endpoint: `agendamentos/${id}/cancelar`, method: 'PUT', data: { motivo } });
+};
+
+export const confirmarAgendamento = async (id: string) => {
+    return await api({ endpoint: `agendamentos/${id}/confirmar`, method: 'PUT' });
+};

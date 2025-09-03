@@ -39,8 +39,10 @@ export type AgendamentoStatus = "Agendado" | "Confirmado" | "Realizado" | "Cance
 
 export type AgendamentoLista = {
     id: string;
-    nomeAluno: string;
-    nomeProfessor: string;
+    disciplina: string;
+    descricao: string;
+    aluno: { nome: string; email: string; };
+    professor: { nome: string; email: string; };
     dataHora: string;
     status: AgendamentoStatus;
 };
@@ -50,4 +52,25 @@ export type ApiGetAgendamentos = {
     itemsTotal: number;
     pageTotal: number;
     curPage: number;
+};
+
+
+export type AgendamentoHistorico = {
+    data: string;
+    status: AgendamentoStatus;
+    responsavel: string;
+    motivo?: string; 
+};
+
+export type AgendamentoDetalhe = AgendamentoLista & {
+    agendadoPor: string;
+    dataCriacao: string;
+    historico: AgendamentoHistorico[];
+    motivoCancelamento?: string; 
+};
+export type DashboardData = {
+    total: number;
+    pendentes: number;
+    confirmadas: number;
+    canceladas: number;
 };

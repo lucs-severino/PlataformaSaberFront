@@ -1,141 +1,154 @@
-import { MdOutlineDeleteForever, MdOutlineEdit } from "react-icons/md";
 import styled from "styled-components";
+import { MdCheck, MdClose } from "react-icons/md";
 
-// Contêiner principal, se necessário para altura
-export const Container = styled.div`
-    height: 100%;
-`;
-
-// Wrapper para habilitar a rolagem horizontal em telas menores
 export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
-  border-radius: 8px;
-  border: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Sombra sutil para a tabela
-  @media (max-width: 768px) {
-    overflow-x: scroll;
-    border-radius: 5px;
-  }
 `;
 
 export const Table = styled.table`
   width: 100%;
   border-spacing: 0;
-  font-size: ${(props) => props.theme.FONT_SIZES.md}; 
-  @media (max-width: 768px) {
-    font-size: ${(props) => props.theme.FONT_SIZES.sm}; 
-  }
+  font-size: ${props => props.theme.FONT_SIZES.sm};
 `;
 
 export const TableHead = styled.thead`
-    background-color: ${props => props.theme.COLORS.tableHeaderBackground};
-    color: ${props => props.theme.COLORS.textColor500};
+  color: ${props => props.theme.COLORS.textColor400};
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
 
-    @media (max-width: 768px) {
-        display: none; 
-    }
+export const TableHeadCell = styled.th`
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
 `;
 
 export const TableBody = styled.tbody``;
 
-export const TableHeadCell = styled.th`
-    padding: 14px 20px;
-    text-align: left;
-    border-right: 1px solid ${props => props.theme.COLORS.tableHeaderBorderColor};
-    border-bottom: 1px solid ${props => props.theme.COLORS.tableHeaderBorderColor};
-    white-space: nowrap; /* Evita que o texto do cabeçalho quebre */
-
-    &:first-child {
-        border-top-left-radius: 8px;
-    }
-
-    &:last-child {
-        border-top-right-radius: 8px;
-        border-right: none; /* Remove a borda direita da última célula do cabeçalho */
-    }
-`;
-
 export const TableRow = styled.tr`
-  &:hover {
-    background-color: ${(props) => props.theme.COLORS.tableRowHover};
-    transform: scale(1.02); // Efeito de expansão na linha ao passar o mouse
-    transition: transform 0.2s ease-in-out;
+  & > td {
+    border-top: 1px solid ${props => props.theme.COLORS.borderColor};
   }
+
   @media (max-width: 768px) {
     display: block;
-    margin-bottom: 15px;
-    border-bottom: 1px solid ${(props) => props.theme.COLORS.borderColor};
-    padding: 10px;
-    background-color: ${(props) => props.theme.COLORS.background};
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme.COLORS.borderColor};
+    padding: 16px;
+    background-color: ${props => props.theme.COLORS.navbarBackground};
   }
 `;
 
 export const TableCell = styled.td`
-  padding: 12px 15px;
-  color: ${(props) => props.theme.COLORS.textColor500};
-  text-align: left;
-  border-bottom: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
-  &:not(:last-child) {
-    border-right: 1px solid ${(props) => props.theme.COLORS.tableHeaderBorderColor};
-  }
-  &:first-child {
-    font-weight: bold; // Destaque para a primeira célula
-  }
+  padding: 16px;
+  vertical-align: middle;
+
   @media (max-width: 768px) {
-    display: block;
-    text-align: right;
-    padding: 10px 20px;
-    position: relative;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-top: none;
+
     &:before {
       content: attr(data-label);
-      position: absolute;
-      left: 10px;
-      font-weight: bold;
-      top: 50%;
-      transform: translateY(-50%);
+      font-weight: 600;
+      color: ${props => props.theme.COLORS.textColor400};
     }
   }
 `;
 
-export const Actions = styled.div`
-    display: flex;
-    gap: 10px;
-
-    @media (max-width: 768px) {
-        justify-content: flex-end; // Alinha os botões à direita da célula
-    }
+// Estilos para as colunas com avatar e texto
+export const UserCell = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 
-export const ActionBtn = styled.button<{ $variant: string }>`
-  padding: 6px 10px;
-  border-radius: 4px;
-  background-color: ${(props) =>
-    props.$variant === "warning"
-      ? props.theme.COLORS.warning
-      : props.theme.COLORS.danger};
-  color: ${(props) => props.theme.COLORS.white};
+export const Avatar = styled.div`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: ${props => props.theme.COLORS.primaryBackgroundExtraLight};
+  color: ${props => props.theme.COLORS.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+`;
+
+export const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const UserName = styled.span`
+  font-weight: 600;
+  color: ${props => props.theme.COLORS.textColor500};
+`;
+
+export const UserEmail = styled.span`
+  color: ${props => props.theme.COLORS.textColor400};
+`;
+
+// Estilo para a coluna "Aula"
+export const AulaInfo = styled(UserInfo)``;
+export const Disciplina = styled(UserName)``;
+export const Descricao = styled(UserEmail)``;
+
+// Estilo para o Status
+const statusColors = {
+  Pendente: { bg: '#FEF3C7', text: '#92400E' },
+  Confirmado: { bg: '#DBEAFE', text: '#1E40AF' },
+  Realizado: { bg: '#D1FAE5', text: '#065F46' },
+  Cancelado: { bg: '#FCE7F3', text: '#9D174D' },
+};
+
+export const StatusBadge = styled.span<{ status: string }>`
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  background-color: ${props => statusColors[props.status as keyof typeof statusColors]?.bg || '#E5E7EB'};
+  color: ${props => statusColors[props.status as keyof typeof statusColors]?.text || '#374151'};
+`;
+
+// Estilo para as Ações
+export const Actions = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const ActionIcon = styled.button`
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${(props) =>
-      props.$variant === "warning"
-        ? props.theme.COLORS.warning
-        : props.theme.COLORS.warning};
-    border-color: ${(props) =>
-      props.$variant === "warning"
-        ? props.theme.COLORS.warning
-        : props.theme.COLORS.danger};
+    background-color: ${props => props.theme.COLORS.tableRowHover};
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 `;
 
-export const EditIcon = styled(MdOutlineEdit)`
-  font-size: ${(props) => props.theme.FONT_SIZES.lg};
+export const ConfirmIcon = styled(ActionIcon)`
+  color: ${props => props.theme.COLORS.success};
 `;
-
-export const DeleteIcon = styled(MdOutlineDeleteForever)`
-    font-size: ${props => props.theme.FONT_SIZES.lg};
+export const CancelIcon = styled(ActionIcon)`
+  color: ${props => props.theme.COLORS.danger};
 `;
