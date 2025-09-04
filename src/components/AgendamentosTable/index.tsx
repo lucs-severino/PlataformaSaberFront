@@ -85,14 +85,14 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                                 {format(new Date(agendamento.dataHora), "dd/MM/yyyy, HH:mm")}
                             </TableCell>
                             <TableCell data-label="Status">
-                                <StatusBadge status={agendamento.status}>{agendamento.status}</StatusBadge>
+                                <StatusBadge $status={agendamento.status}>{agendamento.status}</StatusBadge>
                             </TableCell>
                             <TableCell data-label="Ações">
                                 <Actions>
                                     <ActionIcon title="Ver Detalhes" onClick={() => onViewDetails(agendamento.id)}>
                                         <MdVisibility size={20} />
                                     </ActionIcon>
-                                    <ConfirmIcon title="Confirmar" onClick={() => onConfirm(agendamento.id)} disabled={agendamento.status !== 'Pendente'}>
+                                    <ConfirmIcon title="Confirmar" onClick={() => onConfirm(agendamento.id)} disabled={agendamento.status !== 'Agendado'}>
                                         <MdCheck size={20} />
                                     </ConfirmIcon>
                                     <CancelIcon title="Cancelar" onClick={() => onCancel(agendamento.id)} disabled={agendamento.status === 'Cancelado' || agendamento.status === 'Realizado'}>

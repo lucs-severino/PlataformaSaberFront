@@ -22,6 +22,7 @@ export const ModalContainer = styled.div`
     max-width: 500px;
     padding: 24px;
     position: relative;
+    box-sizing: border-box;
 `;
 
 export const CloseButton = styled(MdClose)`
@@ -39,6 +40,7 @@ export const ModalHeader = styled.h3`
     color: ${props => props.theme.COLORS.textColor500};
 `;
 
+// --- CORREÇÃO AQUI: Garante que o DetailItem seja exportado ---
 export const DetailItem = styled.p`
     margin: 8px 0;
     color: ${props => props.theme.COLORS.textColor500};
@@ -51,11 +53,32 @@ export const DetailItem = styled.p`
     }
 `;
 
+export const MotivoCancelamento = styled.div`
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 4px;
+    background-color: rgba(209, 73, 61, 0.1);
+    border: 1px solid rgba(209, 73, 61, 0.3);
+    color: ${props => props.theme.COLORS.danger};
+    font-size: ${props => props.theme.FONT_SIZES.sm};
+    
+    strong {
+        display: block;
+        margin-bottom: 4px;
+        color: ${props => props.theme.COLORS.danger};
+        font-weight: 700;
+    }
+`;
+
 export const HistoryList = styled.ul`
     list-style: none;
     padding: 0;
     margin-top: 24px;
     border-top: 1px solid ${props => props.theme.COLORS.borderColor};
+
+    h4 {
+        margin-bottom: 0;
+    }
 `;
 
 export const HistoryItem = styled.li`
@@ -65,22 +88,5 @@ export const HistoryItem = styled.li`
 
     &:not(:last-child) {
         border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
-    }
-`;
-
-
-export const MotivoCancelamento = styled.div`
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 4px;
-    background-color: ${props => props.theme.COLORS.danger}1A; // Fundo vermelho claro
-    border: 1px solid ${props => props.theme.COLORS.danger}4D; // Borda vermelha clara
-    color: ${props => props.theme.COLORS.danger};
-    font-size: ${props => props.theme.FONT_SIZES.sm};
-    
-    strong {
-        display: block;
-        margin-bottom: 4px;
-        color: ${props => props.theme.COLORS.danger};
     }
 `;

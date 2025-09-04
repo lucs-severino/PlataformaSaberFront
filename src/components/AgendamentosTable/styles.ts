@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { MdCheck, MdClose } from "react-icons/md";
 
 export const TableWrapper = styled.div`
   width: 100%;
@@ -110,15 +109,14 @@ const statusColors = {
   Cancelado: { bg: '#FCE7F3', text: '#9D174D' },
 };
 
-export const StatusBadge = styled.span<{ status: string }>`
+export const StatusBadge = styled.span<{ $status: string }>`
   padding: 4px 12px;
   border-radius: 16px;
   font-weight: 600;
   font-size: 0.8rem;
-  background-color: ${props => statusColors[props.status as keyof typeof statusColors]?.bg || '#E5E7EB'};
-  color: ${props => statusColors[props.status as keyof typeof statusColors]?.text || '#374151'};
+  background-color: ${props => statusColors[props.$status as keyof typeof statusColors]?.bg || '#E5E7EB'};
+  color: ${props => statusColors[props.$status as keyof typeof statusColors]?.text || '#374151'};
 `;
-
 // Estilo para as Ações
 export const Actions = styled.div`
   display: flex;
