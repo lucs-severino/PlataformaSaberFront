@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
+// === Overlay do modal ===
 export const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -12,19 +13,41 @@ export const Overlay = styled.div`
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    padding: 0; 
+    box-sizing: border-box;
+
+    @media (max-width: 480px) {
+        padding: 0 8px;
+    }
 `;
 
+// === Container do modal ===
 export const ModalContainer = styled.div`
     background-color: ${props => props.theme.COLORS.navbarBackground};
     border: 1px solid ${props => props.theme.COLORS.borderColor};
-    border-radius: 8px;
-    width: 90%;
+    border-radius: 12px;
+    width: 100%;
     max-width: 500px;
     padding: 24px;
     position: relative;
     box-sizing: border-box;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    @media (max-width: 768px) {
+        width: 95%;
+        padding: 16px;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+        margin: auto;          /* garante centralização vertical */
+        max-height: 90vh;
+        padding: 12px;
+    }
 `;
 
+// === Botão de fechar ===
 export const CloseButton = styled(MdClose)`
     position: absolute;
     top: 16px;
@@ -32,15 +55,28 @@ export const CloseButton = styled(MdClose)`
     cursor: pointer;
     font-size: 24px;
     color: ${props => props.theme.COLORS.textColor400};
+
+    @media (max-width: 480px) {
+        top: 12px;
+        right: 12px;
+        font-size: 20px;
+    }
 `;
 
+// === Header do modal ===
 export const ModalHeader = styled.h3`
     margin-top: 0;
     margin-bottom: 24px;
     color: ${props => props.theme.COLORS.textColor500};
+    font-size: 1.25rem;
+
+    @media (max-width: 480px) {
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+    }
 `;
 
-// --- CORREÇÃO AQUI: Garante que o DetailItem seja exportado ---
+// === Item de detalhe ===
 export const DetailItem = styled.p`
     margin: 8px 0;
     color: ${props => props.theme.COLORS.textColor500};
@@ -51,8 +87,14 @@ export const DetailItem = styled.p`
         margin-right: 8px;
         color: ${props => props.theme.COLORS.textColor400};
     }
+
+    @media (max-width: 480px) {
+        font-size: 0.75rem;
+        margin: 6px 0;
+    }
 `;
 
+// === Motivo de cancelamento ===
 export const MotivoCancelamento = styled.div`
     margin-top: 16px;
     padding: 12px;
@@ -68,8 +110,14 @@ export const MotivoCancelamento = styled.div`
         color: ${props => props.theme.COLORS.danger};
         font-weight: 700;
     }
+
+    @media (max-width: 480px) {
+        padding: 8px;
+        font-size: 0.75rem;
+    }
 `;
 
+// === Lista de histórico ===
 export const HistoryList = styled.ul`
     list-style: none;
     padding: 0;
@@ -78,6 +126,15 @@ export const HistoryList = styled.ul`
 
     h4 {
         margin-bottom: 0;
+        font-size: 1rem;
+
+        @media (max-width: 480px) {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        margin-top: 16px;
     }
 `;
 
@@ -88,5 +145,10 @@ export const HistoryItem = styled.li`
 
     &:not(:last-child) {
         border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
+    }
+
+    @media (max-width: 480px) {
+        padding: 8px 0;
+        font-size: 0.8rem;
     }
 `;

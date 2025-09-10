@@ -42,9 +42,8 @@ export const Agendamentos = () => {
 
     const statusOptions = [
         { label: "Todos os Status", value: "" },
-        { label: "Pendente", value: "Pendente" },
+        { label: "Agendado", value: "Agendado" },
         { label: "Confirmado", value: "Confirmado" },
-        { label: "Realizado", value: "Realizado" },
         { label: "Cancelado", value: "Cancelado" },
     ];
 

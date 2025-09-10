@@ -21,7 +21,6 @@ import {
     ConfirmIcon,
     CancelIcon
 } from './styles';
-// Adicionado MdVisibility aqui
 import { MdCheck, MdClose, MdVisibility } from 'react-icons/md';
 import type { AgendamentoLista } from '../../@types/Agendamento';
 
@@ -29,10 +28,9 @@ type Props = {
     data: AgendamentoLista[];
     onConfirm: (id: string) => void;
     onCancel: (id: string) => void;
-    onViewDetails: (id: string) => void; // Adicionada a prop que estava faltando
+    onViewDetails: (id: string) => void;
 };
 
-// Função para pegar as iniciais do nome
 const getInitials = (name: string) => {
     if (!name) return '';
     const names = name.split(' ');
@@ -90,13 +88,21 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                             <TableCell data-label="Ações">
                                 <Actions>
                                     <ActionIcon title="Ver Detalhes" onClick={() => onViewDetails(agendamento.id)}>
-                                        <MdVisibility size={20} />
+                                        <MdVisibility size={25} />
                                     </ActionIcon>
-                                    <ConfirmIcon title="Confirmar" onClick={() => onConfirm(agendamento.id)} disabled={agendamento.status !== 'Agendado'}>
-                                        <MdCheck size={20} />
+                                    <ConfirmIcon
+                                        title="Confirmar"
+                                        onClick={() => onConfirm(agendamento.id)}
+                                        disabled={agendamento.status !== 'Agendado'}
+                                    >
+                                        <MdCheck size={25} />
                                     </ConfirmIcon>
-                                    <CancelIcon title="Cancelar" onClick={() => onCancel(agendamento.id)} disabled={agendamento.status === 'Cancelado' || agendamento.status === 'Realizado'}>
-                                        <MdClose size={20} />
+                                    <CancelIcon
+                                        title="Cancelar"
+                                        onClick={() => onCancel(agendamento.id)}
+                                        disabled={agendamento.status === 'Cancelado' || agendamento.status === 'Realizado'}
+                                    >
+                                        <MdClose size={25} />
                                     </CancelIcon>
                                 </Actions>
                             </TableCell>

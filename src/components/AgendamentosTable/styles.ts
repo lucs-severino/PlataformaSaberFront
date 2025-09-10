@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+// === Responsividade da Tabela ===
 export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
@@ -7,79 +8,96 @@ export const TableWrapper = styled.div`
 
 export const Table = styled.table`
   width: 100%;
-  border-spacing: 0;
-  font-size: ${props => props.theme.FONT_SIZES.sm};
-`;
+  border-collapse: collapse;
 
-export const TableHead = styled.thead`
-  color: ${props => props.theme.COLORS.textColor400};
-  
   @media (max-width: 768px) {
-    display: none;
+    display: block;
+    border: 0;
   }
 `;
 
-export const TableHeadCell = styled.th`
-  padding: 12px 16px;
-  text-align: left;
-  font-weight: 600;
-  white-space: nowrap;
+export const TableHead = styled.thead`
+  @media (max-width: 768px) {
+    display: none; 
+  }
 `;
 
-export const TableBody = styled.tbody``;
+export const TableBody = styled.tbody`
+  @media (max-width: 768px) {
+    display: block;
+    width: 100%;
+  }
+`;
 
 export const TableRow = styled.tr`
-  & > td {
-    border-top: 1px solid ${props => props.theme.COLORS.borderColor};
+  transition: background 0.2s ease;
+  border: 1px solid #ddd;   
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    background-color: ${(props) => props.theme.COLORS.tableRowHover};
   }
 
   @media (max-width: 768px) {
     display: block;
-    margin-bottom: 16px;
-    border-radius: 8px;
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    padding: 16px;
-    background-color: ${props => props.theme.COLORS.navbarBackground};
-  }
-`;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;        /* linha separando os cards */
+    border-radius: 12px;
+    padding: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* leve sombra para destacar */
+    background-color: #fff;
 
-export const TableCell = styled.td`
-  padding: 16px;
-  vertical-align: middle;
-
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-top: none;
-
-    &:before {
-      content: attr(data-label);
-      font-weight: 600;
-      color: ${props => props.theme.COLORS.textColor400};
+    &:hover {
+      background-color: ${(props) => props.theme.COLORS.tableRowHover};
     }
   }
 `;
 
-// Estilos para as colunas com avatar e texto
+
+export const TableHeadCell = styled.th`
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  background: #f5f5f5;
+`;
+
+export const TableCell = styled.td<{ "data-label"?: string }>`
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+
+  @media (max-width: 768px) {
+    display: block;
+    text-align: left;
+    padding: 8px 0;
+
+    &::before {
+      display: block;
+      content: attr(data-label);
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+  }
+`;
+
+// === Células personalizadas ===
 export const UserCell = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 `;
 
 export const Avatar = styled.div`
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: ${props => props.theme.COLORS.primaryBackgroundExtraLight};
-  color: ${props => props.theme.COLORS.primary};
+  background: #ccc;
+  color: white;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  text-transform: uppercase;
 `;
 
 export const UserInfo = styled.div`
@@ -89,11 +107,11 @@ export const UserInfo = styled.div`
 
 export const UserName = styled.span`
   font-weight: 600;
-  color: ${props => props.theme.COLORS.textColor500};
 `;
 
 export const UserEmail = styled.span`
-  color: ${props => props.theme.COLORS.textColor400};
+  font-size: 0.85rem;
+  color: #666;
 `;
 
 // Estilo para a coluna "Aula"

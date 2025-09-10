@@ -25,7 +25,7 @@ export const lightTheme = {
         inputPlaceholderColor: '#200d8aff',
         tableHeaderBackground: '#e4eaf1',
         tableHeaderBorderColor: '#E2E8F0',
-        tableRowHover: '#e4eaf17d',
+        tableRowHover: '#657de97d',
 
         /* Layout */
         sidebarBackground: '#080325',
