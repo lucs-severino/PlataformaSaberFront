@@ -1,11 +1,11 @@
 import { format } from 'date-fns';
-import { 
-    Overlay, 
-    ModalContainer, 
-    CloseButton, 
-    ModalHeader, 
-    DetailItem, 
-    HistoryList, 
+import {
+    Overlay,
+    ModalContainer,
+    CloseButton,
+    ModalHeader,
+    DetailItem,
+    HistoryList,
     HistoryItem,
     MotivoCancelamento
 } from './styles';
@@ -54,7 +54,7 @@ export const DetalheAgendamentoModal = ({ agendamento, onClose }: Props) => {
                     {agendamento.historico?.map((item, index) => (
                         <HistoryItem key={index}>
                             <strong>{item.status}:</strong> {formatDateSafe(item.data, "dd/MM/yyyy")} por {item.responsavel}
-                            {item.motivo && ` - Motivo: ${item.motivo}`}
+                            {item.status === "Cancelado" && item.motivo && ` - Motivo: ${item.motivo}`}
                         </HistoryItem>
                     ))}
                 </HistoryList>
