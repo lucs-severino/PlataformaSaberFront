@@ -44,7 +44,6 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableHeadCell>Aula</TableHeadCell>
                         <TableHeadCell>Aluno</TableHeadCell>
                         <TableHeadCell>Professor</TableHeadCell>
                         <TableHeadCell>Data/Hora</TableHeadCell>
@@ -55,12 +54,6 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                 <TableBody>
                     {data.map(agendamento => (
                         <TableRow key={agendamento.id}>
-                            <TableCell data-label="Aula">
-                                <AulaInfo>
-                                    <Disciplina>{agendamento.disciplina}</Disciplina>
-                                    <Descricao>{agendamento.descricao}</Descricao>
-                                </AulaInfo>
-                            </TableCell>
                             <TableCell data-label="Aluno">
                                 <UserCell>
                                     <Avatar>{getInitials(agendamento.aluno.nome)}</Avatar>

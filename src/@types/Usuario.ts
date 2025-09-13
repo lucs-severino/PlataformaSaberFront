@@ -63,6 +63,7 @@ export type ApiProfessor = {
   cpf: string;
   dataNascimento: string | null;
   status: string;
+  especializacao: string;
 };
 
 export type ApiGetProfessores = {

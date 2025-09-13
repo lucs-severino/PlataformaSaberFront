@@ -101,14 +101,14 @@ export const NovoAgendamento = () => {
     const handleBack = () => setStep(step - 1);
 
     const handleConfirm = async () => {
-        if (isSubmitting) return; 
+        if (isSubmitting) return;
 
         if (!selectedAluno || !selectedProfessor || !selectedDate || !selectedTime) {
             setShowAlert({ type: "error", message: "Todos os campos do resumo devem ser preenchidos.", show: true });
             return;
         }
-        
-        setIsSubmitting(true); 
+
+        setIsSubmitting(true);
 
         const agendamentoData = {
             alunoId: selectedAluno.value,
@@ -125,7 +125,7 @@ export const NovoAgendamento = () => {
         } else {
             setShowAlert({ type: "success", message: "Aula agendada com sucesso!", show: true });
             setTimeout(() => { navigate('/'); }, 1500);
-         
+
         }
     };
 
@@ -151,7 +151,11 @@ export const NovoAgendamento = () => {
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => { setSelectedDate(e.target.value); setSelectedTime(''); };
 
     const alunoOptions = alunos.map(a => ({ label: `${a.nome} (${a.email})`, value: a.id.toString() }));
-    const professorOptions = professores.map(p => ({ label: `${p.nome} (${p.email})`, value: p.id.toString() }));
+    const professorOptions = professores.map(p => ({
+        label: `${p.nome}${p.especializacao ? ` "Especializacão : ${p.especializacao}"` : ''}`,
+        value: p.id.toString()
+    }));
+
 
     return (
         <Container>
@@ -160,8 +164,8 @@ export const NovoAgendamento = () => {
                 <HeaderInfo><HeaderTitle>Agendar Nova Aula</HeaderTitle></HeaderInfo>
                 <ActionButtons>
                     <Button variant="secondary" onClick={handleBack} disabled={step === 1}>Voltar</Button>
-                    <Button 
-                        onClick={step === 5 ? handleConfirm : handleNext} 
+                    <Button
+                        onClick={step === 5 ? handleConfirm : handleNext}
                         disabled={!isStepComplete(step) || isSubmitting}
                     >
                         {step === 5 ? (isSubmitting ? 'Confirmando...' : 'Confirmar') : 'Próximo'}
