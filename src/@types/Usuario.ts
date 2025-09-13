@@ -1,72 +1,76 @@
-export type UsuarioStatus = "Ativo" | "Inativo" | "Pendente"
+export type UsuarioStatus = "Ativo" | "Inativo" | "Pendente";
 
-export type TipoPessoa = "Professor" | "Administracao" | "Aluno" | "Responsavel"
+export type TipoPessoa =
+  | "Professor"
+  | "Administracao"
+  | "Aluno"
+  | "Responsavel";
 
 export type Usuario = {
-    id: string;
-    nome: string;
-    email: string;
-    cpf: string;
-    dataNascimento: string;
-    status: UsuarioStatus;
-    dataCadastro: string;
-    tipoPessoa: TipoPessoa;
-}
+  id: string;
+  nome: string;
+  email: string;
+  cpf: string;
+  dataNascimento: string;
+  status: UsuarioStatus;
+  dataCadastro: string;
+  tipoPessoa: TipoPessoa;
+  especializacao: string;
+};
 
 export type ApiGetUsuarios = {
-    usuarios: {
-        itemsReceived: number,
-        curPage: number,
-        nextPage?: string,
-        prevPage?: string,
-        offset: number,
-        itemsTotal: number,
-        pageTotal: number, 
-        items: Usuario[]
-    }
-}
+  usuarios: {
+    itemsReceived: number;
+    curPage: number;
+    nextPage?: string;
+    prevPage?: string;
+    offset: number;
+    itemsTotal: number;
+    pageTotal: number;
+    items: Usuario[];
+  };
+};
 
 export type ApiGetUsuario = Usuario;
 
 export type ApiNewUsuario = {
-    usuario: Usuario;
-}
+  usuario: Usuario;
+};
 
-export type ApiUpdateUsuario = Usuario; 
+export type ApiUpdateUsuario = Usuario;
 
 export type ApiDeleteUsuario = {
-    success: boolean;
-}
+  success: boolean;
+};
 
 export type ApiGetAlunos = {
-    alunos: {
-        itemsReceived: number,
-        curPage: number,
-        nextPage?: string,
-        prevPage?: string,
-        offset: number,
-        itemsTotal: number,
-        pageTotal: number,
-        items: Usuario[] 
-    }
-}
+  alunos: {
+    itemsReceived: number;
+    curPage: number;
+    nextPage?: string;
+    prevPage?: string;
+    offset: number;
+    itemsTotal: number;
+    pageTotal: number;
+    items: Usuario[];
+  };
+};
 
 export type ApiProfessor = {
-    id: string;
-    nome: string;
-    email: string;
-    cpf: string;
-    dataNascimento: string | null;
-    status: string;
-}
+  id: string;
+  nome: string;
+  email: string;
+  cpf: string;
+  dataNascimento: string | null;
+  status: string;
+};
 
 export type ApiGetProfessores = {
-    professores: {
-        itemsReceived: number,
-        curPage: number,
-        itemsTotal: number,
-        pageTotal: number,
-        items: ApiProfessor[]
-    }
-}
-
+  professores: {
+    itemsReceived: number;
+    curPage: number;
+    itemsTotal: number;
+    pageTotal: number;
+    items: ApiProfessor[];
+  };
+};

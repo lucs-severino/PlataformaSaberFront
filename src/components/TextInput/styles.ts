@@ -23,7 +23,7 @@ export const Input = styled.input<{ $borderRadius?: "sm" | "md" }>`
   box-sizing: border-box;
   transition: all 0.3s;
   border-radius: ${(props) => (props.$borderRadius == "sm" ? "4px" : "40px")};
-  height: 60px;
+  height: 45px;
   color-scheme: dark;
 
   &::placeholder {

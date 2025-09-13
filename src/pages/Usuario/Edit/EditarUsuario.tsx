@@ -19,6 +19,7 @@ export type UsuarioFormData = {
     dataNascimento: string;
     tipoPessoa: 'Aluno' | 'Professor' | 'Administracao';
     status: 'Ativo' | 'Desativado';
+    especializacao?: string;
 };
 
 export const EditarUsuario = () => {
@@ -35,7 +36,8 @@ export const EditarUsuario = () => {
         cpf: '',
         dataNascimento: '',
         tipoPessoa: 'Aluno',
-        status: 'Ativo'
+        status: 'Ativo',
+        especializacao: ''
     });
 
     const handleGetUsuario = async () => {
@@ -53,7 +55,8 @@ export const EditarUsuario = () => {
                 cpf: userData.cpf,
                 dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0],
                 status: userData.status as UsuarioFormData['status'],
-                tipoPessoa: userData.tipoPessoa as UsuarioFormData['tipoPessoa']
+                tipoPessoa: userData.tipoPessoa as UsuarioFormData['tipoPessoa'],
+                especializacao: userData.especializacao || ''
             };
 
             setFormData(newFormData);
@@ -172,6 +175,19 @@ export const EditarUsuario = () => {
                                     ]}
                                 />
                             </FormGroup>
+                            {formData.tipoPessoa === 'Professor' && (
+                                <FormGroup>
+                                    <Label>Especialização</Label>
+                                    <TextInput
+                                        name="especializacao"
+                                        value={formData.especializacao || ''}
+                                        onChange={handleInputChange}
+                                        maxLength={30}
+                                        borderRadius="sm"
+                                    />
+                                </FormGroup>
+                            )}
+
                         </FormGrid>
                     </Form>
                 </Body>

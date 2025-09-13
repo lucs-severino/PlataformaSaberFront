@@ -18,6 +18,7 @@ export type UsuarioFormData = {
     dataNascimento: string;
     tipoPessoa: 'Aluno' | 'Professor' | 'Administracao';
     status: 'Ativo' | 'Desativado';
+    especializacao: string;
 };
 
 export const CadastrarUsuario = () => {
@@ -33,7 +34,8 @@ export const CadastrarUsuario = () => {
         cpf: '',
         dataNascimento: '',
         tipoPessoa: 'Aluno',
-        status: 'Ativo'
+        status: 'Ativo',
+        especializacao: ''
     });
 
     const handleInputChange = (
@@ -149,6 +151,20 @@ export const CadastrarUsuario = () => {
                                 ]}
                             />
                         </FormGroup>
+                        {formData.tipoPessoa === 'Professor' && (
+                            <FormGroup>
+                                <Label>Especialização</Label>
+                                <TextInput
+                                    name="especializacao"
+                                    value={formData.especializacao || ''}
+                                    onChange={handleInputChange}
+                                    maxLength={30}
+                                    placeholder="Digite a especialização"
+                                    borderRadius="sm"
+                                />
+                            </FormGroup>
+                        )}
+
                     </FormGrid>
                 </Form>
             </Body>
