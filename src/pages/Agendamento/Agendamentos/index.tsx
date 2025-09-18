@@ -119,14 +119,6 @@ export const Agendamentos = () => {
     return (
         <Container>
             <Alert type={showAlert.type} title={showAlert.message} show={showAlert.show} setShow={show => setShowAlert({ ...showAlert, show })} />
-
-            <DashboardContainer>
-                <Card><CardTitle>Total de Aulas</CardTitle><CardValue>{dashboardData?.total}</CardValue></Card>
-                <Card><CardTitle>Pendentes</CardTitle><CardValue>{dashboardData?.pendentes}</CardValue></Card>
-                <Card><CardTitle>Confirmadas</CardTitle><CardValue>{dashboardData?.confirmadas}</CardValue></Card>
-                <Card><CardTitle>Canceladas</CardTitle><CardValue>{dashboardData?.canceladas}</CardValue></Card>
-            </DashboardContainer>
-
             <FilterBar>
                 <FilterControls>
                     <TextInput name="nome" placeholder="Buscar por aluno ou professor..." onChange={handleInputChange} value={inputValues.nome} />

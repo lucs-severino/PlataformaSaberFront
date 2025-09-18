@@ -33,14 +33,18 @@ export const HeaderTitle = styled.span`
     font-size: ${props => props.theme.FONT_SIZES.xl};
     color: ${props => props.theme.COLORS.textColor500};
     font-weight: 800;
+
+    @media (max-width: 480px) {
+        font-size: ${props => props.theme.FONT_SIZES.lg};
+    }
 `;
 
 export const Body = styled.div`
+    flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 30px 50px;
-    align-items: center; // Centraliza o formulário na página
+    justify-content: center; /* Centraliza o formulário horizontalmente */
+    padding: 30px 20px; /* Adiciona espaçamento nas laterais para telas menores */
+    overflow-y: auto;
 `;
 
 export const ActionButtons = styled.div`
@@ -59,11 +63,16 @@ export const ActionButtons = styled.div`
 export const Form = styled.div`
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  /* margin: 0 auto; não é mais necessário com o flexbox no Body */
   padding: 30px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.COLORS.background}; // Adicionado para garantir o fundo
   border: 1px solid ${props => props.theme.COLORS.borderColor};
+  box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+
+  @media (max-width: 480px) {
+      padding: 20px;
+  }
 `;
 
 export const StepContainer = styled.div`
@@ -92,6 +101,10 @@ export const StepLine = styled.div<{ active: boolean }>`
     height: 2px;
     background-color: ${props => (props.active ? props.theme.COLORS.primary : props.theme.COLORS.borderColor)};
     margin: 0 10px;
+
+    @media (max-width: 480px) {
+        max-width: 50px;
+    }
 `;
 
 export const FormGroup = styled.div`
@@ -149,5 +162,11 @@ export const SummaryItem = styled.p`
     span {
         font-weight: 600;
         color: ${props => props.theme.COLORS.textColor400};
+    }
+
+    @media (max-width: 480px) {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
     }
 `;

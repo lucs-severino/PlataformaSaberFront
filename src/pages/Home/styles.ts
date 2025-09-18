@@ -13,12 +13,25 @@ export const Header = styled.div`
     align-items: center;
     padding: 40px 50px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
+    gap: 20px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 992px) {
         flex-direction: column;
         align-items: flex-start;
-        gap: 20px;
         padding: 25px 20px;
+    }
+`
+
+export const HeaderActions = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    @media (max-width: 992px) {
+        width: 100%;
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 15px;
     }
 `
 
@@ -41,10 +54,13 @@ export const HeaderSubtitle = styled.span`
 export const HeaderFilter = styled.div`
     display: flex;
     gap: 14px;
-    width: 320px;
-
-    @media (max-width: 768px) {
+    
+    @media (max-width: 992px) {
         width: 100%;
+    }
+
+    @media (max-width: 576px) {
+        flex-direction: column;
     }
 `
 
@@ -58,7 +74,7 @@ export const Loading = styled.div`
 export const Body = styled.div`
     flex: 1;
     padding: 40px 50px;
-    overflow-y: auto; // Adicionado para permitir rolagem se o conteúdo for grande
+    overflow-y: auto;
 
     @media (max-width: 768px) {
         padding: 30px 20px;
@@ -66,11 +82,16 @@ export const Body = styled.div`
 `
 
 export const BodyRow = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 30px;
 
-    @media (max-width: 768px) {
-        flex-direction: column;
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
     }
 `
 
@@ -82,6 +103,7 @@ export const InformationCard = styled.div`
     border: 1px solid ${props => props.theme.COLORS.borderColor};
     padding: 35px 30px;
     border-radius: 10px;
+    box-sizing: border-box;
 `
 
 export const InformationCardContent = styled.div`
@@ -99,30 +121,4 @@ export const InformationCardContentValue = styled.span`
 export const InformationCardContentLabel = styled.span`
     color: ${props => props.theme.COLORS.textColor400};
     font-weight: 600;
-`
-
-export const NewTransactionCard = styled(Link)`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    text-decoration: none;
-    gap: 25px;
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    padding: 30px;
-    background-color: ${props => props.theme.COLORS.primaryBackgroundExtraLight};
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all .3s;
-
-    &:hover {
-        border-color: ${props => props.theme.COLORS.primary};
-    }
-`
-
-export const NewTransactionCardLabel = styled.span`
-    color: ${props => props.theme.COLORS.primary};
-    font-size: ${props => props.theme.FONT_SIZES.lg};
-    font-weight: 800;
 `

@@ -1,27 +1,26 @@
-import { type ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "styled-components"
-import { Body, BodyRow, Container, Header, HeaderFilter, HeaderInfo, HeaderSubtitle, HeaderTitle, InformationCard, InformationCardContent, InformationCardContentLabel, InformationCardContentValue, Loading, NewTransactionCard, NewTransactionCardLabel } from "./styles"
+import { Body, BodyRow, Container, Header, HeaderActions, HeaderFilter, HeaderInfo, HeaderSubtitle, HeaderTitle, InformationCard, InformationCardContent, InformationCardContentLabel, InformationCardContentValue, Loading } from "./styles"
 import SelectInput from "../../components/SelectInput"
 import { ScaleLoader } from "react-spinners"
-import { FcCalendar, FcClock, FcOk } from "react-icons/fc"
+import { FcCalendar, FcClock, FcOk, FcCancel } from "react-icons/fc"
 import { Button } from "../../components/Button"
 import { MdAdd } from "react-icons/md"
-import { getDashboard } from "../../services/requests"
+import { getDashboardAgendamentos } from "../../services/requests"
+import type { DashboardData } from "../../@types/Agendamento"
+import { useNavigate } from "react-router-dom"
 
 export const Home = () => {
     const [loadingRequest, setLoadingRequest] = useState(true)
     const [monthSelected, setMonthSelected] = useState((new Date().getMonth() + 1).toString().padStart(2, '0'))
     const [yearSelected, setYearSelected] = useState(new Date().getFullYear().toString())
-    const [dataDashboard, setDataDashboard] = useState({
-        balance: 0,
-        pending_transactions: 0,
-        completed_transactions: 0
-    })
+    const [dataDashboard, setDataDashboard] = useState<DashboardData | null>(null)
 
     const theme = useTheme()
+    const navigate = useNavigate()
 
-    const handleMonthSelected = (e: ChangeEvent<HTMLSelectElement>) => setMonthSelected(e.target.value)
-    const handleYearSelected = (e: ChangeEvent<HTMLSelectElement>) => setYearSelected(e.target.value)
+    const handleMonthSelected = (e: { target: { value: string } }) => setMonthSelected(e.target.value)
+    const handleYearSelected = (e: { target: { value: string } }) => setYearSelected(e.target.value)
 
     const getYears = () => {
         const years = [];
@@ -47,9 +46,11 @@ export const Home = () => {
 
     const handleGetDashboard = async () => {
         setLoadingRequest(true)
-        const response = await getDashboard(monthSelected, yearSelected)
+        const response = await getDashboardAgendamentos()
         setLoadingRequest(false)
-        setDataDashboard(response)
+        if (response.data) {
+            setDataDashboard(response.data)
+        }
     }
 
     useEffect(() => {
@@ -64,19 +65,25 @@ export const Home = () => {
                     <HeaderSubtitle>Acompanhe o agendamentos e filtre por mês e ano com facilidade!</HeaderSubtitle>
                 </HeaderInfo>
 
-                <HeaderFilter>
-                    <SelectInput
-                        value={monthSelected}
-                        options={getMonths()}
-                        onChange={handleMonthSelected}
-                    />
+                <HeaderActions>
+                    <HeaderFilter>
+                        <SelectInput
+                            value={monthSelected}
+                            options={getMonths()}
+                            onChange={handleMonthSelected}
+                        />
 
-                    <SelectInput
-                        value={yearSelected}
-                        options={getYears()}
-                        onChange={handleYearSelected}
-                    />
-                </HeaderFilter>
+                        <SelectInput
+                            value={yearSelected}
+                            options={getYears()}
+                            onChange={handleYearSelected}
+                        />
+                    </HeaderFilter>
+                    <Button onClick={() => navigate('/agendamento/novo')} size="md">
+                        <MdAdd size={20} style={{ marginRight: '8px' }} />
+                        Agendar Aula
+                    </Button>
+                </HeaderActions>
             </Header>
 
             {loadingRequest &&
@@ -91,9 +98,8 @@ export const Home = () => {
                         <InformationCard>
                             <FcCalendar size={32} />
                             <InformationCardContent>
-                                <InformationCardContentValue
-                                    style={{ color: dataDashboard.balance >= 0 ? theme.COLORS.success : theme.COLORS.danger }}
-                                >
+                                <InformationCardContentValue>
+                                    {dataDashboard?.total}
                                 </InformationCardContentValue>
 
                                 <InformationCardContentLabel>
@@ -107,7 +113,7 @@ export const Home = () => {
 
                             <InformationCardContent>
                                 <InformationCardContentValue>
-                                    {dataDashboard.pending_transactions}
+                                    {dataDashboard?.pendentes}
                                 </InformationCardContentValue>
 
                                 <InformationCardContentLabel>
@@ -121,26 +127,28 @@ export const Home = () => {
 
                             <InformationCardContent>
                                 <InformationCardContentValue>
-                                    {dataDashboard.completed_transactions}
+                                    {dataDashboard?.confirmadas}
                                 </InformationCardContentValue>
 
                                 <InformationCardContentLabel>
-                                    Aulas concluídas!
+                                    Aulas Concluídas!
                                 </InformationCardContentLabel>
                             </InformationCardContent>
                         </InformationCard>
-                    </BodyRow>
 
-                    <BodyRow style={{ marginTop: 30 }}>
-                        <NewTransactionCard to="/transacoes/nova">
-                            <Button borderRadius="rounded">
-                                <MdAdd size={21} />
-                            </Button>
+                        <InformationCard>
+                            <FcCancel size={32} />
 
-                            <NewTransactionCardLabel>
-                                Agenta Aula
-                            </NewTransactionCardLabel>
-                        </NewTransactionCard>
+                            <InformationCardContent>
+                                <InformationCardContentValue>
+                                    {dataDashboard?.canceladas}
+                                </InformationCardContentValue>
+
+                                <InformationCardContentLabel>
+                                    Aulas Canceladas
+                                </InformationCardContentLabel>
+                            </InformationCardContent>
+                        </InformationCard>
                     </BodyRow>
                 </Body>
             }
