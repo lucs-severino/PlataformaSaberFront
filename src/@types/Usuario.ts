@@ -75,3 +75,10 @@ export type ApiGetProfessores = {
     items: ApiProfessor[];
   };
 };
+
+export type AlunoPorMes = {
+    mes: string;
+    quantidade: number;
+};
+
+export type ApiGetAlunosPorMes = AlunoPorMes[];

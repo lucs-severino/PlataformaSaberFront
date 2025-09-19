@@ -1,6 +1,6 @@
 import type { ApiDeleteUser, ApiGetUser, ApiSignIn, ApiSignUp, ApiUpdateUser } from "../@types/Auth"
 import type { ApiDeleteTransaction, ApiGetDashboard, ApiGetTransaction, ApiGetTransactions, ApiNewTransaction, ApiUpdateTransaction, TransactionStatus } from "../@types/Transaction"
-import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario, ApiGetAlunos, ApiGetProfessores } from "../@types/Usuario"
+import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario, ApiGetAlunos, ApiGetProfessores, ApiGetAlunosPorMes } from "../@types/Usuario"
 import { formatDate } from "../utils/formatDate"
 import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
@@ -145,6 +145,19 @@ export const getAlunos = async (page: number, nome?: string) => {
         data: params
     });
 }
+
+export const getAlunosPorMes = async (year: string) => {
+    return await api<ApiGetAlunosPorMes>({
+        endpoint: 'alunos/contagem-por-mes',
+        data: { year }
+    });
+}
+
+export const getTotalAlunos = async () => {
+    return await api<{ total: number }>({
+        endpoint: 'alunos/total'
+    });
+};
 
 // Professores
 export const getProfessores = async (page: number, nome?: string) => {

@@ -11,7 +11,7 @@ export const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 50px;
+    padding: 25px 50px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
     gap: 20px;
 
@@ -83,25 +83,17 @@ export const Body = styled.div`
 
 export const BodyRow = styled.div`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 30px;
-
-    @media (max-width: 992px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    @media (max-width: 576px) {
-        grid-template-columns: 1fr;
-    }
 `
 
 export const InformationCard = styled.div<{ $isClickable?: boolean }>`
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 15px;
     width: 100%;
     border: 1px solid ${props => props.theme.COLORS.borderColor};
-    padding: 35px 30px;
+    padding: 15px;
     border-radius: 10px;
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
@@ -114,6 +106,17 @@ export const InformationCard = styled.div<{ $isClickable?: boolean }>`
             border-color: ${({ theme }) => theme.COLORS.primary};
         }
     `}
+`
+export const ChartContainer = styled.div`
+    margin-top: 40px;
+    padding: 30px;
+    border: 1px solid ${props => props.theme.COLORS.borderColor};
+    border-radius: 10px;
+    background-color: ${props => props.theme.COLORS.navbarBackground};
+    max-width: 80%;
+    height: 400px;
+    margin-left: auto;
+    margin-right: auto;
 `
 
 export const InformationCardContent = styled.div`
