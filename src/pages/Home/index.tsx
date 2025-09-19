@@ -46,7 +46,7 @@ export const Home = () => {
 
     const handleGetDashboard = async () => {
         setLoadingRequest(true)
-        const response = await getDashboardAgendamentos()
+        const response = await getDashboardAgendamentos(monthSelected, yearSelected)
         setLoadingRequest(false)
         if (response.data) {
             setDataDashboard(response.data)

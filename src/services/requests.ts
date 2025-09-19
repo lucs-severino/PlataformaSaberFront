@@ -176,8 +176,11 @@ export const getHorariosDisponiveis = async (professorId: string, data: string) 
 
 
 // ...
-export const getDashboardAgendamentos = async () => {
-    return await api<DashboardData>({ endpoint: 'agendamentos/dashboard-cards' });
+export const getDashboardAgendamentos = async (month: string, year: string) => {
+    return await api<DashboardData>({ 
+        endpoint: 'agendamentos/dashboard-cards',
+        data: { month, year }
+    });
 };
 
 export const getAgendamentos = async (page: number, filters: { nome?: string, status?: string, data?: string }) => {
