@@ -95,7 +95,7 @@ export const Home = () => {
             {!loadingRequest &&
                 <Body>
                     <BodyRow>
-                        <InformationCard>
+                        <InformationCard $isClickable onClick={() => navigate('/agendamento')}>
                             <FcCalendar size={32} />
                             <InformationCardContent>
                                 <InformationCardContentValue>
@@ -108,7 +108,7 @@ export const Home = () => {
                             </InformationCardContent>
                         </InformationCard>
 
-                        <InformationCard>
+                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Agendado')}>
                             <FcClock size={32} />
 
                             <InformationCardContent>
@@ -122,7 +122,7 @@ export const Home = () => {
                             </InformationCardContent>
                         </InformationCard>
 
-                        <InformationCard>
+                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Confirmado')}>
                             <FcOk size={32} />
 
                             <InformationCardContent>
@@ -136,7 +136,7 @@ export const Home = () => {
                             </InformationCardContent>
                         </InformationCard>
 
-                        <InformationCard>
+                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Cancelado')}>
                             <FcCancel size={32} />
 
                             <InformationCardContent>

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 
 export const Container = styled.div`
@@ -95,7 +95,7 @@ export const BodyRow = styled.div`
     }
 `
 
-export const InformationCard = styled.div`
+export const InformationCard = styled.div<{ $isClickable?: boolean }>`
     display: flex;
     align-items: center;
     gap: 25px;
@@ -104,6 +104,16 @@ export const InformationCard = styled.div`
     padding: 35px 30px;
     border-radius: 10px;
     box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+
+    ${({ $isClickable }) => $isClickable && css`
+        cursor: pointer;
+
+        &:hover {
+            transform: translateY(-5px);
+            border-color: ${({ theme }) => theme.COLORS.primary};
+        }
+    `}
 `
 
 export const InformationCardContent = styled.div`

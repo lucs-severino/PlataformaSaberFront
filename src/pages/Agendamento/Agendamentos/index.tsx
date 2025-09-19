@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useTheme } from "styled-components";
 import { ScaleLoader } from "react-spinners";
 import { MdOutlineSearch } from "react-icons/md";
@@ -39,6 +40,7 @@ export const Agendamentos = () => {
     const [agendamentoParaCancelar, setAgendamentoParaCancelar] = useState<string | null>(null);
 
     const theme = useTheme();
+    const location = useLocation();
 
     const statusOptions = [
         { label: "Todos os Status", value: "" },
@@ -46,6 +48,18 @@ export const Agendamentos = () => {
         { label: "Confirmado", value: "Confirmado" },
         { label: "Cancelado", value: "Cancelado" },
     ];
+    
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const status = params.get('status');
+        if (status) {
+            const validStatus = statusOptions.some(option => option.value === status);
+            if (validStatus) {
+                setInputValues(prev => ({ ...prev, status }));
+                setActiveFilters(prev => ({ ...prev, status }));
+            }
+        }
+    }, [location.search]);
 
     const fetchData = async () => {
         setLoading(true);
