@@ -88,11 +88,11 @@ export const UserCell = styled.div`
   gap: 10px;
 `;
 
-export const Avatar = styled.div`
+export const Avatar = styled.div<{ $type?: 'aluno' | 'professor' }>`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #ccc;
+  background-color: ${props => props.$type === 'professor' ? props.theme.COLORS.success : props.theme.COLORS.primary};
   color: white;
   font-weight: bold;
   display: flex;

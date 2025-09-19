@@ -56,7 +56,7 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                         <TableRow key={agendamento.id}>
                             <TableCell data-label="Aluno">
                                 <UserCell>
-                                    <Avatar>{getInitials(agendamento.aluno.nome)}</Avatar>
+                                    <Avatar $type="aluno">{getInitials(agendamento.aluno.nome)}</Avatar>
                                     <UserInfo>
                                         <UserName>{agendamento.aluno.nome}</UserName>
                                         <UserEmail>{agendamento.aluno.email}</UserEmail>
@@ -65,7 +65,7 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                             </TableCell>
                             <TableCell data-label="Professor">
                                 <UserCell>
-                                    <Avatar>{getInitials(agendamento.professor.nome)}</Avatar>
+                                    <Avatar $type="professor">{getInitials(agendamento.professor.nome)}</Avatar>
                                     <UserInfo>
                                         <UserName>{agendamento.professor.nome}</UserName>
                                         <UserEmail>{agendamento.professor.email}</UserEmail>
