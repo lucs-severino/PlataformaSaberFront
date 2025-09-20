@@ -4,7 +4,7 @@ import {
     Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { Body, BodyRow, Container, Header, HeaderActions, HeaderFilter, HeaderInfo, HeaderSubtitle, HeaderTitle, InformationCard, InformationCardContent, InformationCardContentLabel, InformationCardContentValue, Loading, ChartContainer } from "./styles";
+import { Body, BodyRow, Container, Header, HeaderActions, HeaderFilter, HeaderInfo, HeaderSubtitle, HeaderTitle, InformationCard, InformationCardContent, InformationCardContentLabel, InformationCardContentValue, Loading, ChartContainer, ContentWrapper } from "./styles";
 import SelectInput from "../../components/SelectInput";
 import { ScaleLoader } from "react-spinners";
 import { FcCalendar, FcClock, FcOk, FcCancel, FcBusinessman } from "react-icons/fc";
@@ -75,18 +75,46 @@ export const Home = () => {
 
         if (chartResponse.data) {
             const chartLabels = chartResponse.data.map((d: any) => d.mes);
-            const chartValues = chartResponse.data.map((d: any) => d.quantidade);
+            const totalValues = chartResponse.data.map((d: any) => d.total);
+            const activeValues = chartResponse.data.map((d: any) => d.ativos);
+            const inactiveValues = chartResponse.data.map((d: any) => d.inativos);
 
             setStudentChartData({
                 labels: chartLabels,
                 datasets: [
                     {
-                        label: 'Novos Alunos',
-                        data: chartValues,
+                        label: 'Total de Alunos',
+                        data: totalValues,
                         borderColor: theme.COLORS.primary,
-                        backgroundColor: `${theme.COLORS.primary}80`, // Cor com transparência
-                        tension: 0.4, // Para deixar as linhas curvas
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.4,
+                        fill: false,
                     },
+                    {
+                        label: 'Alunos Ativos',
+                        data: activeValues,
+                        borderColor: theme.COLORS.success,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.4,
+                        fill: false,
+                    },
+                    {
+                        label: 'Alunos Inativos',
+                        data: inactiveValues,
+                        borderColor: theme.COLORS.danger,
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.4,
+                        fill: false,
+                    }
                 ],
             });
         }
@@ -131,82 +159,89 @@ export const Home = () => {
                 </Loading>
             ) : (
                 <Body>
-                    <BodyRow>
-                        <InformationCard>
-                             <FcBusinessman size={32} />
-                             <InformationCardContent>
-                                 <InformationCardContentValue>
-                                     {totalAlunos}
-                                 </InformationCardContentValue>
-                                 <InformationCardContentLabel>
-                                    Total de Alunos
-                                 </InformationCardContentLabel>
-                             </InformationCardContent>
-                         </InformationCard>
-                        
-                        <InformationCard $isClickable onClick={() => navigate('/agendamento')}>
-                            <FcCalendar size={32} />
-                            <InformationCardContent>
-                                <InformationCardContentValue>
-                                    {dataDashboard?.total}
-                                </InformationCardContentValue>
-                                <InformationCardContentLabel>
-                                   Aulas Agendadas
-                                </InformationCardContentLabel>
-                            </InformationCardContent>
-                        </InformationCard>
+                    <ContentWrapper>
+                        <BodyRow>
+                            <InformationCard>
+                                 <FcBusinessman size={32} />
+                                 <InformationCardContent>
+                                     <InformationCardContentValue>
+                                         {totalAlunos}
+                                     </InformationCardContentValue>
+                                     <InformationCardContentLabel>
+                                        Total de Alunos
+                                     </InformationCardContentLabel>
+                                 </InformationCardContent>
+                             </InformationCard>
+                            
+                            <InformationCard $isClickable onClick={() => navigate('/agendamento')}>
+                                <FcCalendar size={32} />
+                                <InformationCardContent>
+                                    <InformationCardContentValue>
+                                        {dataDashboard?.total}
+                                    </InformationCardContentValue>
+                                    <InformationCardContentLabel>
+                                       Aulas Agendadas
+                                    </InformationCardContentLabel>
+                                </InformationCardContent>
+                            </InformationCard>
 
-                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Agendado')}>
-                            <FcClock size={32} />
-                            <InformationCardContent>
-                                <InformationCardContentValue>
-                                    {dataDashboard?.pendentes}
-                                </InformationCardContentValue>
-                                <InformationCardContentLabel>
-                                    Aulas Pendentes!
-                                </InformationCardContentLabel>
-                            </InformationCardContent>
-                        </InformationCard>
+                            <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Agendado')}>
+                                <FcClock size={32} />
+                                <InformationCardContent>
+                                    <InformationCardContentValue>
+                                        {dataDashboard?.pendentes}
+                                    </InformationCardContentValue>
+                                    <InformationCardContentLabel>
+                                        Aulas Pendentes!
+                                    </InformationCardContentLabel>
+                                </InformationCardContent>
+                            </InformationCard>
 
-                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Confirmado')}>
-                            <FcOk size={32} />
-                            <InformationCardContent>
-                                <InformationCardContentValue>
-                                    {dataDashboard?.confirmadas}
-                                </InformationCardContentValue>
-                                <InformationCardContentLabel>
-                                    Aulas Concluídas!
-                                </InformationCardContentLabel>
-                            </InformationCardContent>
-                        </InformationCard>
+                            <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Confirmado')}>
+                                <FcOk size={32} />
+                                <InformationCardContent>
+                                    <InformationCardContentValue>
+                                        {dataDashboard?.confirmadas}
+                                    </InformationCardContentValue>
+                                    <InformationCardContentLabel>
+                                        Aulas Concluídas!
+                                    </InformationCardContentLabel>
+                                </InformationCardContent>
+                            </InformationCard>
 
-                        <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Cancelado')}>
-                            <FcCancel size={32} />
-                            <InformationCardContent>
-                                <InformationCardContentValue>
-                                    {dataDashboard?.canceladas}
-                                </InformationCardContentValue>
-                                <InformationCardContentLabel>
-                                    Aulas Canceladas
-                                </InformationCardContentLabel>
-                            </InformationCardContent>
-                        </InformationCard>
-                    </BodyRow>
+                            <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Cancelado')}>
+                                <FcCancel size={32} />
+                                <InformationCardContent>
+                                    <InformationCardContentValue>
+                                        {dataDashboard?.canceladas}
+                                    </InformationCardContentValue>
+                                    <InformationCardContentLabel>
+                                        Aulas Canceladas
+                                    </InformationCardContentLabel>
+                                </InformationCardContent>
+                            </InformationCard>
+                        </BodyRow>
 
-                    {studentChartData && (
-                        <ChartContainer>
-                             <Line
-                                 options={{
-                                     responsive: true,
-                                     plugins: {
-                                         legend: { position: 'top' as const },
-                                         title: { display: true, text: `Alunos Cadastrados em ${yearSelected}` },
-                                     },
-                                 }} 
-                                 data={studentChartData} 
-                             />
-                        </ChartContainer>
-                    )}
+                        {studentChartData && (
+                            <ChartContainer>
+                                 <Line
+                                     options={{
+                                         responsive: true,
+                                         plugins: {
+                                             legend: { position: 'top' as const },
+                                             title: { display: true, text: `Alunos Cadastrados em ${yearSelected}` },
+                                         },
+                                         scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                         }
+                                     }} 
+                                     data={studentChartData} 
+                                 />
+                            </ChartContainer>
+                        )}
+                    </ContentWrapper>
                 </Body>
             )}
         </Container>

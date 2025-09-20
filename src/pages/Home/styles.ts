@@ -80,6 +80,13 @@ export const Body = styled.div`
         padding: 30px 20px;
     }
 `
+export const ContentWrapper = styled.div`
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 
 export const BodyRow = styled.div`
     display: grid;
@@ -113,10 +120,7 @@ export const ChartContainer = styled.div`
     border: 1px solid ${props => props.theme.COLORS.borderColor};
     border-radius: 10px;
     background-color: ${props => props.theme.COLORS.navbarBackground};
-    max-width: 80%;
     height: 400px;
-    margin-left: auto;
-    margin-right: auto;
 `
 
 export const InformationCardContent = styled.div`
