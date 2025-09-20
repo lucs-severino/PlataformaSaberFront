@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "styled-components";
 import {
-    Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,
+    Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import { Body, BodyRow, Container, Header, HeaderActions, HeaderFilter, HeaderInfo, HeaderSubtitle, HeaderTitle, InformationCard, InformationCardContent, InformationCardContentLabel, InformationCardContentValue, Loading, ChartContainer, ContentWrapper } from "./styles";
 import SelectInput from "../../components/SelectInput";
 import { ScaleLoader } from "react-spinners";
 import { FcCalendar, FcClock, FcOk, FcCancel, FcBusinessman } from "react-icons/fc";
 import { Button } from "../../components/Button";
 import { MdAdd } from "react-icons/md";
-import { getAlunosPorMes, getDashboardAgendamentos, getTotalAlunos } from "../../services/requests";
+import { getAlunosPorMes, getDashboardAgendamentos, getTotalAlunos, getAulasPorPeriodo } from "../../services/requests";
 import type { DashboardData } from "../../@types/Agendamento";
 import { useNavigate } from "react-router-dom";
 
@@ -19,6 +19,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement, 
   Title,
   Tooltip,
   Legend
@@ -31,6 +32,7 @@ export const Home = () => {
     const [dataDashboard, setDataDashboard] = useState<DashboardData | null>(null);
     const [totalAlunos, setTotalAlunos] = useState(0);
     const [studentChartData, setStudentChartData] = useState<any>(null);
+    const [aulasChartData, setAulasChartData] = useState<any>(null);
 
     const theme = useTheme();
     const navigate = useNavigate();
@@ -59,10 +61,16 @@ export const Home = () => {
 
     const handleGetDashboardData = async () => {
         setLoadingRequest(true);
-        const [dashboardResponse, chartResponse, totalAlunosResponse] = await Promise.all([
+        const [
+            dashboardResponse,
+            chartResponse,
+            totalAlunosResponse,
+            aulasPorPeriodoResponse
+        ] = await Promise.all([
             getDashboardAgendamentos(monthSelected, yearSelected),
             getAlunosPorMes(yearSelected),
-            getTotalAlunos()
+            getTotalAlunos(),
+            getAulasPorPeriodo(monthSelected, yearSelected) 
         ]);
 
         if (dashboardResponse.data) {
@@ -118,6 +126,38 @@ export const Home = () => {
                 ],
             });
         }
+
+        if (aulasPorPeriodoResponse.data) {
+            const data = aulasPorPeriodoResponse.data;
+            const diasAbreviados: { [key: string]: string } = {
+                "segunda-feira": "Seg", "terça-feira": "Ter", "quarta-feira": "Qua",
+                "quinta-feira": "Qui", "sexta-feira": "Sex", "sábado": "Sáb", "domingo": "Dom"
+            };
+
+            const labels = data.map(d => diasAbreviados[d.diaDaSemana.toLowerCase()] || d.diaDaSemana);
+            
+            setAulasChartData({
+                labels,
+                datasets: [
+                    {
+                        label: 'Manhã',
+                        data: data.map(d => d.manha),
+                        backgroundColor: '#3b82f6', 
+                    },
+                    {
+                        label: 'Tarde',
+                        data: data.map(d => d.tarde),
+                        backgroundColor: '#f59e0b', 
+                    },
+                    {
+                        label: 'Noite',
+                        data: data.map(d => d.noite),
+                        backgroundColor: theme.COLORS.primary,
+                    },
+                ]
+            });
+        }
+
         setLoadingRequest(false);
     };
 
@@ -129,8 +169,8 @@ export const Home = () => {
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Aulas</HeaderTitle>
-                    <HeaderSubtitle>Acompanhe o agendamentos e filtre por mês e ano com facilidade!</HeaderSubtitle>
+                    <HeaderTitle>Dashboard</HeaderTitle>
+                    <HeaderSubtitle>Acompanhe os agendamentos e filtre por mês e ano com facilidade!</HeaderSubtitle>
                 </HeaderInfo>
 
                 <HeaderActions>
@@ -161,7 +201,7 @@ export const Home = () => {
                 <Body>
                     <ContentWrapper>
                         <BodyRow>
-                            <InformationCard>
+                             <InformationCard>
                                  <FcBusinessman size={32} />
                                  <InformationCardContent>
                                      <InformationCardContentValue>
@@ -222,6 +262,31 @@ export const Home = () => {
                             </InformationCard>
                         </BodyRow>
 
+                        {/* Novo Gráfico de Barras */}
+                        {aulasChartData && (
+                            <ChartContainer>
+                                <Bar
+                                    options={{
+                                        responsive: true,
+                                        plugins: {
+                                            legend: { position: 'top' as const },
+                                            title: { display: true, text: `Aulas por Período do Dia` },
+                                        },
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                ticks: {
+                                                    stepSize: 1
+                                                }
+                                            }
+                                        }
+                                    }}
+                                    data={aulasChartData}
+                                />
+                            </ChartContainer>
+                        )}
+
+                        {/* Gráfico de Linha (Alunos) */}
                         {studentChartData && (
                             <ChartContainer>
                                  <Line

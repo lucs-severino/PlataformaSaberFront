@@ -74,3 +74,11 @@ export type DashboardData = {
     confirmadas: number;
     canceladas: number;
 };
+
+
+export type AulasPorPeriodo = {
+    diaDaSemana: string;
+    manha: number;
+    tarde: number;
+    noite: number;
+}[];

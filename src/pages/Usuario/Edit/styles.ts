@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+// Exporta os estilos base do cabeçalho
 export {
   Container,
   Header,
@@ -10,6 +11,7 @@ export {
   Body,
 } from "../../Account/styles";
 
+// Adiciona e exporta os mesmos estilos de formulário da página de Cadastro
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -17,23 +19,12 @@ export const Form = styled.form`
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
-  background-color: ${({ theme }) => theme.COLORS.background};
-  padding: clamp(20px, 3vw, 30px);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-
-  transition: all 0.2s ease-in-out;
 `;
 
 export const FormGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(16px, 2vw, 24px);
-
-  border: 1px solid ${({ theme }) => theme.COLORS.borderColor || "#71cc3dff"};
-  border-radius: 12px;
-  padding: clamp(16px, 2vw, 30px);
-  background-color: ${({ theme }) => theme.COLORS.background};
 
   @media (max-width: 960px) {
     grid-template-columns: repeat(2, 1fr);
@@ -50,23 +41,6 @@ export const FormGroup = styled.div<{ span?: number }>`
   gap: 6px;
 
   grid-column: span ${({ span }) => span || 1};
-
-  input, select, textarea {
-    border: 1px solid ${({ theme }) => theme.COLORS.borderColor || "#ccc"};
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: ${({ theme }) => theme.FONT_SIZES.sm};
-    color: ${({ theme }) => theme.COLORS.textColor500};
-    background-color: ${({ theme }) => theme.COLORS.inputBackground};
-
-    transition: border 0.2s, box-shadow 0.2s;
-
-    &:focus {
-      border-color: ${({ theme }) => theme.COLORS.primary};
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
-      outline: none;
-    }
-  }
 `;
 
 export const Label = styled.label`
@@ -77,12 +51,11 @@ export const Label = styled.label`
 
 export const ActionButtons = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Alinha os botões à direita */
   gap: 15px;
-  margin-top: 24px;
 
   @media (max-width: 768px) {
-    flex-direction: column;
+    flex-direction: row; /* Mantém os botões lado a lado no mobile */
     justify-content: stretch;
 
     & > button {

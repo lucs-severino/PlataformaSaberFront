@@ -1,10 +1,18 @@
 import type { ApiDeleteUser, ApiGetUser, ApiSignIn, ApiSignUp, ApiUpdateUser } from "../@types/Auth"
 import type { ApiDeleteTransaction, ApiGetDashboard, ApiGetTransaction, ApiGetTransactions, ApiNewTransaction, ApiUpdateTransaction, TransactionStatus } from "../@types/Transaction"
-import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario, ApiGetAlunos, ApiGetProfessores, ApiGetAlunosPorMes } from "../@types/Usuario"
+import type { ApiGetUsuarios, ApiGetUsuario, ApiNewUsuario, ApiUpdateUsuario, ApiDeleteUsuario, ApiGetAlunos, ApiGetProfessores, ApiGetAlunosPorMes, UsuarioStats} from "../@types/Usuario" // Adicione UsuarioStats aqui
 import { formatDate } from "../utils/formatDate"
 import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
 import type { AgendamentoDetalhe, ApiGetAgendamentos, ApiGetHorariosDisponiveis, DashboardData, NovoAgendamentoData } from "../@types/Agendamento"
+
+// Adicione este tipo para o novo gráfico
+export type AulasPorPeriodo = {
+    diaDaSemana: string;
+    manha: number;
+    tarde: number;
+    noite: number;
+}[];
 
 // Auth
 export const signUp = async (name: string, email: string, password: string) =>{
@@ -71,11 +79,13 @@ export const deleteTransaction = async (id: number) => {
 
 
 //// Usuarios
-export const getUsuarios = async (page: number, nome?: string) => {
-
-    const params: { page: number; nome?: string } = { page };
+export const getUsuarios = async (page: number, nome?: string, tipo?: string) => {
+    const params: { page: number; nome?: string; tipo?: string } = { page };
     if (nome && nome.trim() !== '') {
         params.nome = nome;
+    }
+    if (tipo && tipo.trim() !== '') {
+        params.tipo = tipo;
     }
 
     return await api<ApiGetUsuarios>({
@@ -83,6 +93,12 @@ export const getUsuarios = async (page: number, nome?: string) => {
         data: params
     });
 }
+
+export const getUsuariosStats = async () => {
+    return await api<UsuarioStats>({
+        endpoint: 'usuarios/stats'
+    });
+};
 
 export const getUsuario = async (id: string) => {
     return await api<ApiGetUsuario>({
@@ -131,6 +147,14 @@ export const getDashboard = async(month: string, year: string) => {
 
     return { balance, pending_transactions, completed_transactions}
 }
+
+// Nova função para o gráfico de aulas por período
+export const getAulasPorPeriodo = async (month: string, year: string) => {
+    return await api<AulasPorPeriodo>({
+        endpoint: 'agendamentos/aulas-por-periodo',
+        data: { month, year }
+    });
+};
 
 /// Alunos
 export const getAlunos = async (page: number, nome?: string) => {

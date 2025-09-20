@@ -6,7 +6,18 @@ import TextInput from "../../../components/TextInput";
 import SelectInput from "../../../components/SelectInput";
 import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
-import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderTitle, Loading } from "./styles";
+import { 
+    ActionButtons, 
+    Body, 
+    Container, 
+    Form, 
+    FormGrid, 
+    FormGroup, 
+    Header, 
+    HeaderInfo, 
+    HeaderTitle, 
+    Loading 
+} from "./styles";
 import { Label } from "../../../components/TextInput/styles";
 import { newUsuario } from "../../../services/requests";
 import { validateCPF } from "../../../utils/cpfValidator";
@@ -26,7 +37,7 @@ export const CadastrarUsuario = () => {
     const theme = useTheme();
 
     const [loadingRequest, setLoadingRequest] = useState(false);
-    const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false });
+    const [showAlert, setShowAlert] = useState({ type: "error" as "success" | "error", message: "", show: false });
 
     const [formData, setFormData] = useState<UsuarioFormData>({
         nome: '',

@@ -8,8 +8,21 @@ import TextInput from "../../../components/TextInput";
 import SelectInput from "../../../components/SelectInput";
 import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
-import { ActionButtons, Body, Container, Form, FormGrid, FormGroup, Header, HeaderInfo, HeaderTitle, Loading } from "./styles";
-import { Label } from "../../../components/TextInput/styles";
+// ===== ÁREA CORRIGIDA (IMPORTS) =====
+import { 
+    ActionButtons, 
+    Body, 
+    Container, 
+    Form, 
+    FormGrid, 
+    FormGroup, 
+    Header, 
+    HeaderInfo, 
+    HeaderTitle, 
+    Loading,
+    Label // Importa o Label daqui
+} from "./styles";
+// ===== FIM DA ÁREA CORRIGIDA =====
 import { validateCPF } from "../../../utils/cpfValidator";
 
 export type UsuarioFormData = {
@@ -28,7 +41,7 @@ export const EditarUsuario = () => {
     const theme = useTheme();
 
     const [loadingRequest, setLoadingRequest] = useState(true);
-    const [showAlert, setShowAlert] = useState({ type: "error", message: "", show: false });
+    const [showAlert, setShowAlert] = useState({ type: "error" as "success" | "error", message: "", show: false });
 
     const [formData, setFormData] = useState<UsuarioFormData>({
         nome: '',
@@ -113,8 +126,8 @@ export const EditarUsuario = () => {
                     >
                         Cancelar
                     </Button>
-                    <Button type="submit" form="edit-user-form">
-                        Salvar Alterações
+                    <Button type="submit" form="edit-user-form" disabled={loadingRequest}>
+                       {loadingRequest ? 'Salvando...' : 'Salvar Alterações'}
                     </Button>
                 </ActionButtons>
             </Header>
@@ -126,12 +139,12 @@ export const EditarUsuario = () => {
                 setShow={show => setShowAlert({ ...showAlert, show })}
             />
 
-            {loadingRequest ? (
-                <Loading>
-                    <ScaleLoader color={theme.COLORS.primary} />
-                </Loading>
-            ) : (
-                <Body>
+            <Body>
+                {loadingRequest ? (
+                    <Loading>
+                        <ScaleLoader color={theme.COLORS.primary} />
+                    </Loading>
+                ) : (
                     <Form onSubmit={handleSubmit} id="edit-user-form">
                         <FormGrid>
                             <FormGroup>
@@ -187,11 +200,10 @@ export const EditarUsuario = () => {
                                     />
                                 </FormGroup>
                             )}
-
                         </FormGrid>
                     </Form>
-                </Body>
-            )}
+                )}
+            </Body>
         </Container>
     );
 };

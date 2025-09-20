@@ -6,6 +6,12 @@ export type TipoPessoa =
   | "Aluno"
   | "Responsavel";
 
+export type UsuarioStats = {
+  alunos: { ativos: number; desativados: number };
+  professores: { ativos: number; desativados: number };
+  administracao: { ativos: number; desativados: number };
+};
+
 export type Usuario = {
   id: string;
   nome: string;
@@ -77,8 +83,8 @@ export type ApiGetProfessores = {
 };
 
 export type AlunoPorMes = {
-    mes: string;
-    quantidade: number;
+  mes: string;
+  quantidade: number;
 };
 
 export type ApiGetAlunosPorMes = AlunoPorMes[];

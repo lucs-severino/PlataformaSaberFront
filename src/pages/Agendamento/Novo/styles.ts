@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-// --- Estilos copiados de outras páginas para consistência ---
-
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -11,11 +9,11 @@ export const Container = styled.div`
 export const Header = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Adicionado para garantir alinhamento vertical */
+    align-items: center; 
     padding: 40px 50px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
+    flex-shrink: 0;
 
-    /* ===== CORREÇÃO PARA SMARTPHONE ===== */
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: flex-start;
@@ -42,8 +40,8 @@ export const HeaderTitle = styled.span`
 export const Body = styled.div`
     flex: 1;
     display: flex;
-    justify-content: center; /* Centraliza o formulário horizontalmente */
-    padding: 30px 20px; /* Adiciona espaçamento nas laterais para telas menores */
+    justify-content: center;
+    padding: 30px 20px;
     overflow-y: auto;
 `;
 
@@ -52,23 +50,20 @@ export const ActionButtons = styled.div`
   justify-content: flex-end;
   gap: 15px;
 
-    /* ===== CORREÇÃO PARA SMARTPHONE ===== */
     @media (max-width: 768px) {
         width: 100%;
     }
 `;
 
-// --- Estilos específicos para esta página (antigo modal) ---
-
 export const Form = styled.div`
   width: 100%;
-  max-width: 800px;
-  /* margin: 0 auto; não é mais necessário com o flexbox no Body */
+  max-width: 550px; /* << Diminuímos ainda mais a largura máxima */
   padding: 30px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.COLORS.background}; // Adicionado para garantir o fundo
+  background-color: ${({ theme }) => theme.COLORS.navbarBackground};
   border: 1px solid ${props => props.theme.COLORS.borderColor};
-  box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+  box-sizing: border-box;
+  height: fit-content;
 
   @media (max-width: 480px) {
       padding: 20px;
@@ -97,7 +92,7 @@ export const Step = styled.div<{ active: boolean }>`
 
 export const StepLine = styled.div<{ active: boolean }>`
     flex: 1;
-    max-width: 200px;
+    max-width: 120px; /* Linha ainda menor */
     height: 2px;
     background-color: ${props => (props.active ? props.theme.COLORS.primary : props.theme.COLORS.borderColor)};
     margin: 0 10px;
