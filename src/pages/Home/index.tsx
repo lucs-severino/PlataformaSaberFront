@@ -208,7 +208,7 @@ export const Home = () => {
                                          {totalAlunos}
                                      </InformationCardContentValue>
                                      <InformationCardContentLabel>
-                                        Total de Alunos
+                                        Total de Alunos Ativos
                                      </InformationCardContentLabel>
                                  </InformationCardContent>
                              </InformationCard>

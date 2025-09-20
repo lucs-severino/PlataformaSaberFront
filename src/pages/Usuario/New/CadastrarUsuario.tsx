@@ -6,21 +6,21 @@ import TextInput from "../../../components/TextInput";
 import SelectInput from "../../../components/SelectInput";
 import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
-import { 
-    ActionButtons, 
-    Body, 
-    Container, 
-    Form, 
-    FormGrid, 
-    FormGroup, 
-    Header, 
-    HeaderInfo, 
-    HeaderTitle, 
-    Loading 
+import {
+    ActionButtons,
+    Body,
+    Container,
+    Form,
+    FormGrid,
+    FormGroup,
+    Header,
+    HeaderInfo,
+    HeaderTitle,
+    Loading
 } from "./styles";
 import { Label } from "../../../components/TextInput/styles";
 import { newUsuario } from "../../../services/requests";
-import { validateCPF } from "../../../utils/cpfValidator";
+import { validateCPF, maskCPF } from "../../../utils/cpfValidator";
 
 export type UsuarioFormData = {
     nome: string;
@@ -56,17 +56,26 @@ export const CadastrarUsuario = () => {
         setFormData(prev => ({ ...prev, [name!]: value }));
     };
 
+    const handleCpfChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const maskedValue = maskCPF(e.target.value);
+        setFormData(prev => ({ ...prev, cpf: maskedValue }));
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!validateCPF(formData.cpf)) {
+        const cleanCpf = formData.cpf.replace(/[^\d]+/g, '');
+
+        if (!validateCPF(cleanCpf)) {
             setShowAlert({ type: "error", message: "O CPF informado é inválido.", show: true });
             return;
         }
 
         setLoadingRequest(true);
-        const response = await newUsuario(formData);
+        const response = await newUsuario({
+            ...formData,
+            cpf: cleanCpf
+        });
         setLoadingRequest(false);
 
         if (response.data) {
@@ -131,7 +140,15 @@ export const CadastrarUsuario = () => {
                         </FormGroup>
                         <FormGroup>
                             <Label>CPF</Label>
-                            <TextInput name="cpf" value={formData.cpf} onChange={handleInputChange} required borderRadius="sm" />
+                            <TextInput
+                                name="cpf"
+                                value={formData.cpf}
+                                onChange={handleCpfChange}
+                                required
+                                borderRadius="sm"
+                                placeholder="000.000.000-00"
+                                maxLength={14}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <Label>Data de Nascimento</Label>

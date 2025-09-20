@@ -2,28 +2,25 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTheme } from "styled-components";
 import { getUsuario, updateUsuario } from "../../../services/requests";
-
 import { Button } from "../../../components/Button";
 import TextInput from "../../../components/TextInput";
 import SelectInput from "../../../components/SelectInput";
 import Alert from "../../../components/Alert";
 import { ScaleLoader } from "react-spinners";
-// ===== ÁREA CORRIGIDA (IMPORTS) =====
-import { 
-    ActionButtons, 
-    Body, 
-    Container, 
-    Form, 
-    FormGrid, 
-    FormGroup, 
-    Header, 
-    HeaderInfo, 
-    HeaderTitle, 
+import {
+    ActionButtons,
+    Body,
+    Container,
+    Form,
+    FormGrid,
+    FormGroup,
+    Header,
+    HeaderInfo,
+    HeaderTitle,
     Loading,
-    Label // Importa o Label daqui
+    Label
 } from "./styles";
-// ===== FIM DA ÁREA CORRIGIDA =====
-import { validateCPF } from "../../../utils/cpfValidator";
+import { validateCPF, maskCPF } from "../../../utils/cpfValidator";
 
 export type UsuarioFormData = {
     nome: string;
@@ -65,7 +62,7 @@ export const EditarUsuario = () => {
             const newFormData: UsuarioFormData = {
                 nome: userData.nome,
                 email: userData.email,
-                cpf: userData.cpf,
+                cpf: maskCPF(userData.cpf),
                 dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0],
                 status: userData.status as UsuarioFormData['status'],
                 tipoPessoa: userData.tipoPessoa as UsuarioFormData['tipoPessoa'],
@@ -90,10 +87,17 @@ export const EditarUsuario = () => {
         setFormData(prev => ({ ...prev, [name!]: value }));
     };
 
+    const handleCpfChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const maskedValue = maskCPF(e.target.value);
+        setFormData(prev => ({ ...prev, cpf: maskedValue }));
+    };
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!validateCPF(formData.cpf)) {
+        const cleanCpf = formData.cpf.replace(/[^\d]+/g, '');
+
+        if (!validateCPF(cleanCpf)) {
             setShowAlert({ type: "error", message: "O CPF informado é inválido.", show: true });
             return;
         }
@@ -101,7 +105,10 @@ export const EditarUsuario = () => {
         if (!id) return;
 
         setLoadingRequest(true);
-        const response = await updateUsuario(id, formData);
+        const response = await updateUsuario(id, {
+            ...formData,
+            cpf: cleanCpf
+        });
         setLoadingRequest(false);
 
         if (response.data) {
@@ -127,7 +134,7 @@ export const EditarUsuario = () => {
                         Cancelar
                     </Button>
                     <Button type="submit" form="edit-user-form" disabled={loadingRequest}>
-                       {loadingRequest ? 'Salvando...' : 'Salvar Alterações'}
+                        {loadingRequest ? 'Salvando...' : 'Salvar Alterações'}
                     </Button>
                 </ActionButtons>
             </Header>
@@ -157,7 +164,15 @@ export const EditarUsuario = () => {
                             </FormGroup>
                             <FormGroup>
                                 <Label>CPF</Label>
-                                <TextInput name="cpf" value={formData.cpf} onChange={handleInputChange} required borderRadius="sm" />
+                                <TextInput
+                                    name="cpf"
+                                    value={formData.cpf}
+                                    onChange={handleCpfChange}
+                                    required
+                                    borderRadius="sm"
+                                    placeholder="000.000.000-00"
+                                    maxLength={14}
+                                />
                             </FormGroup>
                             <FormGroup>
                                 <Label>Data de Nascimento</Label>
