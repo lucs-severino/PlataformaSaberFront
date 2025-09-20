@@ -49,14 +49,10 @@ export const Home = () => {
     };
 
     const getMonths = () => {
-        const monthsArray = Array.from({ length: 12 }, (_, index) => {
-            const date = new Date(new Date().getFullYear(), index, 1);
-            return {
-                value: (index + 1).toString().padStart(2, '0'),
-                label: date.toLocaleString('pt-BR', { month: 'long' })
-            };
-        });
-        return monthsArray;
+        return Array.from({ length: 12 }, (_, index) => ({
+            value: (index + 1).toString().padStart(2, '0'),
+            label: new Date(new Date().getFullYear(), index, 1).toLocaleString('pt-BR', { month: 'long' })
+        }));
     };
 
     const handleGetDashboardData = async () => {
@@ -73,87 +69,32 @@ export const Home = () => {
             getAulasPorPeriodo(monthSelected, yearSelected) 
         ]);
 
-        if (dashboardResponse.data) {
-            setDataDashboard(dashboardResponse.data);
-        }
-
-        if (totalAlunosResponse.data) {
-            setTotalAlunos(totalAlunosResponse.data.total);
-        }
+        if (dashboardResponse.data) setDataDashboard(dashboardResponse.data);
+        if (totalAlunosResponse.data) setTotalAlunos(totalAlunosResponse.data.total);
 
         if (chartResponse.data) {
             const chartLabels = chartResponse.data.map((d: any) => d.mes);
-            const totalValues = chartResponse.data.map((d: any) => d.total);
-            const activeValues = chartResponse.data.map((d: any) => d.ativos);
-            const inactiveValues = chartResponse.data.map((d: any) => d.inativos);
-
             setStudentChartData({
                 labels: chartLabels,
                 datasets: [
-                    {
-                        label: 'Total de Alunos',
-                        data: totalValues,
-                        borderColor: theme.COLORS.primary,
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        tension: 0.4,
-                        fill: false,
-                    },
-                    {
-                        label: 'Alunos Ativos',
-                        data: activeValues,
-                        borderColor: theme.COLORS.success,
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        tension: 0.4,
-                        fill: false,
-                    },
-                    {
-                        label: 'Alunos Inativos',
-                        data: inactiveValues,
-                        borderColor: theme.COLORS.danger,
-                        backgroundColor: 'transparent',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        tension: 0.4,
-                        fill: false,
-                    }
+                    { label: 'Total', data: chartResponse.data.map((d: any) => d.total), borderColor: theme.COLORS.primary, fill: false, tension: 0.4 },
+                    { label: 'Ativos', data: chartResponse.data.map((d: any) => d.ativos), borderColor: theme.COLORS.success, fill: false, tension: 0.4 },
+                    { label: 'Inativos', data: chartResponse.data.map((d: any) => d.inativos), borderColor: theme.COLORS.danger, fill: false, tension: 0.4 }
                 ],
             });
         }
 
         if (aulasPorPeriodoResponse.data) {
             const data = aulasPorPeriodoResponse.data;
-            const diasAbreviados: { [key: string]: string } = {
-                "segunda-feira": "Seg", "terça-feira": "Ter", "quarta-feira": "Qua",
-                "quinta-feira": "Qui", "sexta-feira": "Sex", "sábado": "Sáb", "domingo": "Dom"
-            };
-
+            const diasAbreviados: { [key: string]: string } = { "segunda-feira": "Seg", "terça-feira": "Ter", "quarta-feira": "Qua", "quinta-feira": "Qui", "sexta-feira": "Sex", "sábado": "Sáb", "domingo": "Dom" };
             const labels = data.map(d => diasAbreviados[d.diaDaSemana.toLowerCase()] || d.diaDaSemana);
             
             setAulasChartData({
                 labels,
                 datasets: [
-                    {
-                        label: 'Manhã',
-                        data: data.map(d => d.manha),
-                        backgroundColor: '#3b82f6', 
-                    },
-                    {
-                        label: 'Tarde',
-                        data: data.map(d => d.tarde),
-                        backgroundColor: '#f59e0b', 
-                    },
-                    {
-                        label: 'Noite',
-                        data: data.map(d => d.noite),
-                        backgroundColor: theme.COLORS.primary,
-                    },
+                    { label: 'Manhã', data: data.map(d => d.manha), backgroundColor: '#3b82f6' },
+                    { label: 'Tarde', data: data.map(d => d.tarde), backgroundColor: '#f59e0b' },
+                    { label: 'Noite', data: data.map(d => d.noite), backgroundColor: theme.COLORS.primary },
                 ]
             });
         }
@@ -175,16 +116,8 @@ export const Home = () => {
 
                 <HeaderActions>
                     <HeaderFilter>
-                        <SelectInput
-                            value={monthSelected}
-                            options={getMonths()}
-                            onChange={handleMonthSelected}
-                        />
-                        <SelectInput
-                            value={yearSelected}
-                            options={getYears()}
-                            onChange={handleYearSelected}
-                        />
+                        <SelectInput value={monthSelected} options={getMonths()} onChange={handleMonthSelected} />
+                        <SelectInput value={yearSelected} options={getYears()} onChange={handleYearSelected} />
                     </HeaderFilter>
                     <Button onClick={() => navigate('/agendamento/novo')} size="md">
                         <MdAdd size={20} style={{ marginRight: '8px' }} />
@@ -193,117 +126,60 @@ export const Home = () => {
                 </HeaderActions>
             </Header>
 
-            {loadingRequest ? (
-                <Loading>
-                    <ScaleLoader color={theme.COLORS.primary} />
-                </Loading>
-            ) : (
+            {loadingRequest ? <Loading><ScaleLoader color={theme.COLORS.primary} /></Loading> : (
                 <Body>
                     <ContentWrapper>
                         <BodyRow>
                              <InformationCard>
                                  <FcBusinessman size={32} />
                                  <InformationCardContent>
-                                     <InformationCardContentValue>
-                                         {totalAlunos}
-                                     </InformationCardContentValue>
-                                     <InformationCardContentLabel>
-                                        Total de Alunos Ativos
-                                     </InformationCardContentLabel>
+                                     <InformationCardContentValue>{totalAlunos}</InformationCardContentValue>
+                                     <InformationCardContentLabel>Total de Alunos Ativos</InformationCardContentLabel>
                                  </InformationCardContent>
                              </InformationCard>
                             
                             <InformationCard $isClickable onClick={() => navigate('/agendamento')}>
                                 <FcCalendar size={32} />
                                 <InformationCardContent>
-                                    <InformationCardContentValue>
-                                        {dataDashboard?.total}
-                                    </InformationCardContentValue>
-                                    <InformationCardContentLabel>
-                                       Aulas Agendadas
-                                    </InformationCardContentLabel>
+                                    <InformationCardContentValue>{dataDashboard?.total}</InformationCardContentValue>
+                                    <InformationCardContentLabel>Aulas Agendadas</InformationCardContentLabel>
                                 </InformationCardContent>
                             </InformationCard>
 
                             <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Agendado')}>
                                 <FcClock size={32} />
                                 <InformationCardContent>
-                                    <InformationCardContentValue>
-                                        {dataDashboard?.pendentes}
-                                    </InformationCardContentValue>
-                                    <InformationCardContentLabel>
-                                        Aulas Pendentes!
-                                    </InformationCardContentLabel>
+                                    <InformationCardContentValue>{dataDashboard?.pendentes}</InformationCardContentValue>
+                                    <InformationCardContentLabel>Aulas Pendentes!</InformationCardContentLabel>
                                 </InformationCardContent>
                             </InformationCard>
 
                             <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Confirmado')}>
                                 <FcOk size={32} />
                                 <InformationCardContent>
-                                    <InformationCardContentValue>
-                                        {dataDashboard?.confirmadas}
-                                    </InformationCardContentValue>
-                                    <InformationCardContentLabel>
-                                        Aulas Concluídas!
-                                    </InformationCardContentLabel>
+                                    <InformationCardContentValue>{dataDashboard?.confirmadas}</InformationCardContentValue>
+                                    <InformationCardContentLabel>Aulas Concluídas!</InformationCardContentLabel>
                                 </InformationCardContent>
                             </InformationCard>
 
                             <InformationCard $isClickable onClick={() => navigate('/agendamento?status=Cancelado')}>
                                 <FcCancel size={32} />
                                 <InformationCardContent>
-                                    <InformationCardContentValue>
-                                        {dataDashboard?.canceladas}
-                                    </InformationCardContentValue>
-                                    <InformationCardContentLabel>
-                                        Aulas Canceladas
-                                    </InformationCardContentLabel>
+                                    <InformationCardContentValue>{dataDashboard?.canceladas}</InformationCardContentValue>
+                                    <InformationCardContentLabel>Aulas Canceladas</InformationCardContentLabel>
                                 </InformationCardContent>
                             </InformationCard>
                         </BodyRow>
 
-                        {/* Novo Gráfico de Barras */}
                         {aulasChartData && (
                             <ChartContainer>
-                                <Bar
-                                    options={{
-                                        responsive: true,
-                                        plugins: {
-                                            legend: { position: 'top' as const },
-                                            title: { display: true, text: `Aulas por Período do Dia` },
-                                        },
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true,
-                                                ticks: {
-                                                    stepSize: 1
-                                                }
-                                            }
-                                        }
-                                    }}
-                                    data={aulasChartData}
-                                />
+                                <Bar options={{ responsive: true, plugins: { legend: { position: 'top' as const }, title: { display: true, text: `Aulas por Período do Dia` }}, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }}}}} data={aulasChartData} />
                             </ChartContainer>
                         )}
 
-                        {/* Gráfico de Linha (Alunos) */}
                         {studentChartData && (
                             <ChartContainer>
-                                 <Line
-                                     options={{
-                                         responsive: true,
-                                         plugins: {
-                                             legend: { position: 'top' as const },
-                                             title: { display: true, text: `Alunos Cadastrados em ${yearSelected}` },
-                                         },
-                                         scales: {
-                                            y: {
-                                                beginAtZero: true
-                                            }
-                                         }
-                                     }} 
-                                     data={studentChartData} 
-                                 />
+                                 <Line options={{ responsive: true, plugins: { legend: { position: 'top' as const }, title: { display: true, text: `Alunos Cadastrados em ${yearSelected}` }}, scales: { y: { beginAtZero: true }}}} data={studentChartData} />
                             </ChartContainer>
                         )}
                     </ContentWrapper>

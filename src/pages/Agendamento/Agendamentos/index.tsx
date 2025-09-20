@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 import { ScaleLoader } from "react-spinners";
-import { MdOutlineSearch } from "react-icons/md";
-import { 
-    getAgendamentos, 
-    getDashboardAgendamentos, 
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlineSearch } from "react-icons/md";
+import {
+    getAgendamentos,
     getAgendamentoDetalhes,
     confirmarAgendamento,
     cancelarAgendamento
@@ -16,31 +15,32 @@ import Alert from "../../../components/Alert";
 import { Button } from "../../../components/Button";
 import {
     Body, Container, Loading, Empty, EmptyLabel,
-    DashboardContainer, Card, CardTitle, CardValue, FilterBar, FilterControls
+    FilterBar, FilterControls, TabContainer, TabButton, Pagination, PaginationItem
 } from "./styles";
 import TextInput from "../../../components/TextInput";
-import type { AgendamentoDetalhe, AgendamentoLista, DashboardData } from "../../../@types/Agendamento";
+import type { AgendamentoDetalhe, AgendamentoLista } from "../../../@types/Agendamento";
 import { DetalheAgendamentoModal } from "../../../components/DetalheAgendamentoModal";
 import { CancelarAgendamentoModal } from "../../../components/CancelarAgendamentoModal";
 
 export const Agendamentos = () => {
     const [loading, setLoading] = useState(true);
-    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-    const [agendamentos, setAgendamentos] = useState<AgendamentoLista[]>([]);
     const [showAlert, setShowAlert] = useState({ type: "success" as "success" | "error", message: "", show: false });
+
+    const [agendamentos, setAgendamentos] = useState<AgendamentoLista[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    
+    const [activeView, setActiveView] = useState<'futuras' | 'passadas'>('futuras');
+
     const [inputValues, setInputValues] = useState({ status: '', data: '', nome: '' });
     const [activeFilters, setActiveFilters] = useState({ status: '', data: '', nome: '' });
-    
+
     const [selectedAgendamento, setSelectedAgendamento] = useState<AgendamentoDetalhe | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const [agendamentoParaCancelar, setAgendamentoParaCancelar] = useState<string | null>(null);
 
     const theme = useTheme();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const statusOptions = [
         { label: "Todos os Status", value: "" },
@@ -48,54 +48,73 @@ export const Agendamentos = () => {
         { label: "Confirmado", value: "Confirmado" },
         { label: "Cancelado", value: "Cancelado" },
     ];
-    
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const status = params.get('status');
-        if (status) {
-            const validStatus = statusOptions.some(option => option.value === status);
-            if (validStatus) {
-                setInputValues(prev => ({ ...prev, status }));
-                setActiveFilters(prev => ({ ...prev, status }));
-            }
-        }
-    }, [location.search]);
 
-    const fetchData = async () => {
+    // Função de busca centralizada e otimizada com useCallback
+    const fetchData = useCallback(async (filters: typeof activeFilters, page: number, view: typeof activeView) => {
         setLoading(true);
-        const [dashboardResponse, agendamentosResponse] = await Promise.all([
-            getDashboardAgendamentos(),
-            getAgendamentos(currentPage, activeFilters) 
-        ]);
-        
-        if (dashboardResponse.data) setDashboardData(dashboardResponse.data);
-        if (agendamentosResponse.data) {
-            setAgendamentos(agendamentosResponse.data.items);
-            setTotalPages(agendamentosResponse.data.pageTotal);
+        const response = await getAgendamentos(page, filters, view);
+
+        if (response.data) {
+            setAgendamentos(response.data.items);
+            setTotalPages(response.data.pageTotal);
+        } else {
+            setAgendamentos([]);
+            setTotalPages(1);
         }
         setLoading(false);
-    };
+    }, []); // Sem dependências, pois os parâmetros são passados diretamente
 
+    // Efeito principal que orquestra a busca de dados
     useEffect(() => {
-        fetchData();
-    }, [currentPage, activeFilters]);
+        const params = new URLSearchParams(location.search);
+        const statusFromUrl = params.get('status');
 
-    const handleInputChange = (e: { target: { name?: string; value: string } }) => {
-        const { name, value } = e.target;
-        setInputValues(prev => ({ ...prev, [name!]: value }));
+        if (statusFromUrl) {
+            const validStatus = statusOptions.some(option => option.value === statusFromUrl);
+            if (validStatus) {
+                const newFilters = { ...activeFilters, status: statusFromUrl };
+                // Atualiza ambos os estados de filtro
+                setInputValues(newFilters);
+                setActiveFilters(newFilters);
+                // Reseta a página e limpa a URL
+                setCurrentPage(1);
+                navigate(location.pathname, { replace: true });
+                // A busca será acionada pelo useEffect abaixo quando 'activeFilters' for atualizado
+            }
+        } else {
+            // Se não houver filtro na URL, busca com os filtros atuais
+            fetchData(activeFilters, currentPage, activeView);
+        }
+    }, [location.search]); // Reage apenas a mudanças na URL
+
+    // Efeito secundário que reage a mudanças nos filtros, página ou aba
+    useEffect(() => {
+        // Evita a busca inicial se a URL estiver sendo processada
+        const params = new URLSearchParams(location.search);
+        if (!params.get('status')) {
+            fetchData(activeFilters, currentPage, activeView);
+        }
+    }, [activeFilters, currentPage, activeView, fetchData]);
+
+    
+    const handleTabChange = (view: 'futuras' | 'passadas') => {
+        setActiveView(view);
+        setCurrentPage(1);
     };
 
     const handleSearch = () => {
-        setActiveFilters(inputValues);
         setCurrentPage(1);
+        setActiveFilters(inputValues);
     };
+    
+    // As funções de manipulação de agendamento permanecem as mesmas
     const handleConfirm = async (id: string) => {
         const response = await confirmarAgendamento(id);
         if (response.error) {
             setShowAlert({ type: "error", message: response.error, show: true });
         } else {
             setShowAlert({ type: "success", message: "Agendamento confirmado com sucesso!", show: true });
-            fetchData(); 
+            fetchData(activeFilters, currentPage, activeView);
         }
     };
     
@@ -112,7 +131,7 @@ export const Agendamentos = () => {
         } else {
             setShowAlert({ type: "success", message: "Agendamento cancelado com sucesso!", show: true });
             setAgendamentoParaCancelar(null);
-            fetchData();
+            fetchData(activeFilters, currentPage, activeView);
         }
     };
 
@@ -125,53 +144,55 @@ export const Agendamentos = () => {
             setShowAlert({ type: "error", message: response.error || "Não foi possível carregar os detalhes.", show: true });
         }
     };
-
-    if (loading) {
-        return <Loading><ScaleLoader color={theme.COLORS.primary} /></Loading>;
-    }
+    
+    const handleInputChange = (e: { target: { name?: string; value: string } }) => {
+        const { name, value } = e.target;
+        setInputValues(prev => ({ ...prev, [name!]: value }));
+    };
 
     return (
         <Container>
             <Alert type={showAlert.type} title={showAlert.message} show={showAlert.show} setShow={show => setShowAlert({ ...showAlert, show })} />
+            
             <FilterBar>
                 <FilterControls>
                     <TextInput name="nome" placeholder="Buscar por aluno ou professor..." onChange={handleInputChange} value={inputValues.nome} />
                     <SelectInput name="status" options={statusOptions} onChange={handleInputChange} value={inputValues.status} />
                     <TextInput type="date" name="data" onChange={handleInputChange} value={inputValues.data} />
                 </FilterControls>
-                <Button onClick={handleSearch}>
-                    <MdOutlineSearch size={20} /> Buscar
-                </Button>
+                <Button onClick={handleSearch}><MdOutlineSearch size={20} /> Buscar</Button>
             </FilterBar>
 
             <Body>
-                {agendamentos.length === 0 ? (
-                    <Empty><EmptyLabel>Nenhum agendamento encontrado.</EmptyLabel></Empty>
-                ) : (
-                    <>
-                        <AgendamentosTable 
-                            data={agendamentos} 
-                            onConfirm={handleConfirm} 
-                            onCancel={handleOpenCancelModal}
-                            onViewDetails={handleViewDetails}
-                        />
-                    </>
-                )}
+                <TabContainer>
+                    <TabButton onClick={() => handleTabChange('futuras')} $isActive={activeView === 'futuras'}>Próximas Aulas</TabButton>
+                    <TabButton onClick={() => handleTabChange('passadas')} $isActive={activeView === 'passadas'}>Aulas Anteriores</TabButton>
+                </TabContainer>
+
+                {loading ? <Loading><ScaleLoader color={theme.COLORS.primary} /></Loading> :
+                    agendamentos.length > 0 ? (
+                        <>
+                            <AgendamentosTable data={agendamentos} onConfirm={handleConfirm} onCancel={handleOpenCancelModal} onViewDetails={handleViewDetails} />
+                            {totalPages > 1 && (
+                                <Pagination>
+                                    <PaginationItem onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}><MdOutlineKeyboardArrowLeft size={21} /></PaginationItem>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <PaginationItem key={index} $active={index + 1 === currentPage} onClick={() => setCurrentPage(index + 1)}>
+                                            {index + 1}
+                                        </PaginationItem>
+                                    ))}
+                                    <PaginationItem onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}><MdOutlineKeyboardArrowRight size={21} /></PaginationItem>
+                                </Pagination>
+                            )}
+                        </>
+                    ) : (
+                        <Empty><EmptyLabel>Nenhum agendamento encontrado para esta visualização.</EmptyLabel></Empty>
+                    )
+                }
             </Body>
 
-            {isModalOpen && (
-                <DetalheAgendamentoModal 
-                    agendamento={selectedAgendamento}
-                    onClose={() => setIsModalOpen(false)}
-                />
-            )}
-            
-            {agendamentoParaCancelar && (
-                <CancelarAgendamentoModal 
-                    onClose={() => setAgendamentoParaCancelar(null)}
-                    onConfirm={handleConfirmCancel}
-                />
-            )}
+            {isModalOpen && <DetalheAgendamentoModal agendamento={selectedAgendamento} onClose={() => setIsModalOpen(false)} />}
+            {agendamentoParaCancelar && <CancelarAgendamentoModal onClose={() => setAgendamentoParaCancelar(null)} onConfirm={handleConfirmCancel} />}
         </Container>
     );
 };

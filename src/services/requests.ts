@@ -220,8 +220,17 @@ export const getDashboardAgendamentos = async (month: string, year: string) => {
     });
 };
 
-export const getAgendamentos = async (page: number, filters: { nome?: string, status?: string, data?: string }) => {
-    return await api<ApiGetAgendamentos>({ endpoint: 'agendamentos', data: { page, ...filters } });
+// Agentamentos
+
+export const getAgendamentos = async (
+    page: number, 
+    filters: { nome?: string, status?: string, data?: string },
+    view: 'futuras' | 'passadas' 
+) => {
+    return await api<ApiGetAgendamentos>({ 
+        endpoint: 'agendamentos', 
+        data: { page, ...filters, view }
+    });
 };
 
 export const getAgendamentoDetalhes = async (id: string) => {
