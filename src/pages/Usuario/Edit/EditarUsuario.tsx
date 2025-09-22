@@ -27,8 +27,8 @@ export type UsuarioFormData = {
     email: string;
     cpf: string;
     dataNascimento: string;
-    tipoPessoa: 'Aluno' | 'Professor' | 'Administracao';
-    status: 'Ativo' | 'Desativado';
+    tipoPessoa: "Aluno" | "Professor" | "Administracao";
+    status: "Ativo" | "Desativado";
     especializacao?: string;
 };
 
@@ -38,16 +38,20 @@ export const EditarUsuario = () => {
     const theme = useTheme();
 
     const [loadingRequest, setLoadingRequest] = useState(true);
-    const [showAlert, setShowAlert] = useState({ type: "error" as "success" | "error", message: "", show: false });
+    const [showAlert, setShowAlert] = useState({
+        type: "error" as "success" | "error",
+        message: "",
+        show: false,
+    });
 
     const [formData, setFormData] = useState<UsuarioFormData>({
-        nome: '',
-        email: '',
-        cpf: '',
-        dataNascimento: '',
-        tipoPessoa: 'Aluno',
-        status: 'Ativo',
-        especializacao: ''
+        nome: "",
+        email: "",
+        cpf: "",
+        dataNascimento: "",
+        tipoPessoa: "Aluno",
+        status: "Ativo",
+        especializacao: "",
     });
 
     const handleGetUsuario = async () => {
@@ -63,16 +67,21 @@ export const EditarUsuario = () => {
                 nome: userData.nome,
                 email: userData.email,
                 cpf: maskCPF(userData.cpf),
-                dataNascimento: new Date(userData.dataNascimento).toISOString().split('T')[0],
-                status: userData.status as UsuarioFormData['status'],
-                tipoPessoa: userData.tipoPessoa as UsuarioFormData['tipoPessoa'],
-                especializacao: userData.especializacao || ''
+                dataNascimento: new Date(userData.dataNascimento)
+                    .toISOString()
+                    .split("T")[0],
+                status: userData.status as UsuarioFormData["status"],
+                tipoPessoa: userData.tipoPessoa as UsuarioFormData["tipoPessoa"],
+                especializacao: userData.especializacao || "",
             };
 
             setFormData(newFormData);
-
         } else if (response.error) {
-            setShowAlert({ type: "error", message: `Erro ao buscar usuário: ${response.error}`, show: true });
+            setShowAlert({
+                type: "error",
+                message: `Erro ao buscar usuário: ${response.error}`,
+                show: true,
+            });
         }
     };
 
@@ -81,41 +90,66 @@ export const EditarUsuario = () => {
     }, [id]);
 
     const handleInputChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name?: string; value: string } }
+        e:
+            | ChangeEvent<HTMLInputElement | HTMLSelectElement>
+            | { target: { name?: string; value: string } }
     ) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name!]: value }));
+        setFormData((prev) => ({ ...prev, [name!]: value }));
     };
 
     const handleCpfChange = (e: ChangeEvent<HTMLInputElement>) => {
         const maskedValue = maskCPF(e.target.value);
-        setFormData(prev => ({ ...prev, cpf: maskedValue }));
+        setFormData((prev) => ({ ...prev, cpf: maskedValue }));
     };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        if (!id) return;
 
-        const cleanCpf = formData.cpf.replace(/[^\d]+/g, '');
+        const cleanCpf = formData.cpf.replace(/[^\d]+/g, "");
 
         if (!validateCPF(cleanCpf)) {
-            setShowAlert({ type: "error", message: "O CPF informado é inválido.", show: true });
+            setShowAlert({
+                type: "error",
+                message: "O CPF informado é inválido.",
+                show: true,
+            });
             return;
         }
 
-        if (!id) return;
+        if (
+            formData.tipoPessoa === "Professor" &&
+            !formData.especializacao?.trim()
+        ) {
+            setShowAlert({
+                type: "error",
+                message: "O campo Especialização é obrigatório para professores.",
+                show: true,
+            });
+            return;
+        }
 
         setLoadingRequest(true);
         const response = await updateUsuario(id, {
             ...formData,
-            cpf: cleanCpf
+            cpf: cleanCpf,
         });
         setLoadingRequest(false);
 
         if (response.data) {
-            setShowAlert({ type: "success", message: "Usuário atualizado com sucesso!", show: true });
-            setTimeout(() => navigate('/usuarios'), 1500);
+            setShowAlert({
+                type: "success",
+                message: "Usuário atualizado com sucesso!",
+                show: true,
+            });
+            setTimeout(() => navigate("/usuarios"), 1500);
         } else {
-            setShowAlert({ type: "error", message: `Erro ao atualizar: ${response.error}`, show: true });
+            setShowAlert({
+                type: "error",
+                message: `Erro ao atualizar: ${response.error}`,
+                show: true,
+            });
         }
     };
 
@@ -133,8 +167,12 @@ export const EditarUsuario = () => {
                     >
                         Cancelar
                     </Button>
-                    <Button type="submit" form="edit-user-form" disabled={loadingRequest}>
-                        {loadingRequest ? 'Salvando...' : 'Salvar Alterações'}
+                    <Button
+                        type="submit"
+                        form="edit-user-form"
+                        disabled={loadingRequest}
+                    >
+                        {loadingRequest ? "Salvando..." : "Salvar Alterações"}
                     </Button>
                 </ActionButtons>
             </Header>
@@ -143,7 +181,7 @@ export const EditarUsuario = () => {
                 type={showAlert.type}
                 title={showAlert.message}
                 show={showAlert.show}
-                setShow={show => setShowAlert({ ...showAlert, show })}
+                setShow={(show) => setShowAlert({ ...showAlert, show })}
             />
 
             <Body>
@@ -156,11 +194,24 @@ export const EditarUsuario = () => {
                         <FormGrid>
                             <FormGroup>
                                 <Label>Nome Completo</Label>
-                                <TextInput name="nome" value={formData.nome} onChange={handleInputChange} required borderRadius="sm" />
+                                <TextInput
+                                    name="nome"
+                                    value={formData.nome}
+                                    onChange={handleInputChange}
+                                    required
+                                    borderRadius="sm"
+                                />
                             </FormGroup>
                             <FormGroup>
                                 <Label>E-mail</Label>
-                                <TextInput name="email" type="email" value={formData.email} onChange={handleInputChange} borderRadius="sm" required />
+                                <TextInput
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    borderRadius="sm"
+                                    required
+                                />
                             </FormGroup>
                             <FormGroup>
                                 <Label>CPF</Label>
@@ -176,19 +227,13 @@ export const EditarUsuario = () => {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Data de Nascimento</Label>
-                                <TextInput name="dataNascimento" type="date" value={formData.dataNascimento} onChange={handleInputChange} required borderRadius="sm" />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Tipo</Label>
-                                <SelectInput
-                                    name="tipoPessoa"
-                                    value={formData.tipoPessoa}
+                                <TextInput
+                                    name="dataNascimento"
+                                    type="date"
+                                    value={formData.dataNascimento}
                                     onChange={handleInputChange}
-                                    options={[
-                                        { label: 'Professor', value: 'Professor' },
-                                        { label: 'Administração', value: 'Administracao' },
-                                        { label: 'Aluno', value: 'Aluno' },
-                                    ]}
+                                    required
+                                    borderRadius="sm"
                                 />
                             </FormGroup>
                             <FormGroup>
@@ -198,20 +243,21 @@ export const EditarUsuario = () => {
                                     value={formData.status}
                                     onChange={handleInputChange}
                                     options={[
-                                        { label: 'Ativo', value: 'Ativo' },
-                                        { label: 'Desativado', value: 'Desativado' },
+                                        { label: "Ativo", value: "Ativo" },
+                                        { label: "Desativado", value: "Desativado" },
                                     ]}
                                 />
                             </FormGroup>
-                            {formData.tipoPessoa === 'Professor' && (
+                            {formData.tipoPessoa === "Professor" && (
                                 <FormGroup>
                                     <Label>Especialização</Label>
                                     <TextInput
                                         name="especializacao"
-                                        value={formData.especializacao || ''}
+                                        value={formData.especializacao || ""}
                                         onChange={handleInputChange}
                                         maxLength={30}
                                         borderRadius="sm"
+                                        required={formData.tipoPessoa === "Professor"}
                                     />
                                 </FormGroup>
                             )}
