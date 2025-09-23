@@ -6,7 +6,6 @@ import type { UsuarioFormData } from "../pages/Usuario/Edit/EditarUsuario"
 import { api } from "./api"
 import type { AgendamentoDetalhe, ApiGetAgendamentos, ApiGetHorariosDisponiveis, DashboardData, NovoAgendamentoData } from "../@types/Agendamento"
 
-// Adicione este tipo para o novo gráfico
 export type AulasPorPeriodo = {
     diaDaSemana: string;
     manha: number;
@@ -42,8 +41,16 @@ export const updateUser = async (name: string, email : string) => {
 
 export const deleteUser = async () => {
     return await api<ApiDeleteUser>({
-        endpoint: 'users', method: 'DELETE'
+        endpoint: 'usuarios', method: 'DELETE'
     })
+}
+
+export const updatePassword = async (currentPassword: string, newPassword: string) => {
+    return await api<{ message: string }>({
+        endpoint: 'users/change-password', 
+        method: 'PUT',
+        data: { currentPassword, newPassword }
+    });
 }
 
 // Transactions 
