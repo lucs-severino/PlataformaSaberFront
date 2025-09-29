@@ -33,11 +33,19 @@ export const getUser = async () => {
     })
 }
 
-export const updateUser = async (name: string, email : string) => {
+export const updateUser = async (nome: string, email: string) => {
+    if (!nome || !email) {
+        throw new Error("Nome e email devem ser fornecidos.");
+    }
+
     return await api<ApiUpdateUser>({
-        endpoint: 'users', method: 'PUT', data: {name, email}
-    })
+        endpoint: 'usuarios/meu-usuario',
+        method: 'PUT',
+        data: { Nome: nome, Email: email }
+    });
 }
+
+
 
 export const deleteUser = async () => {
     return await api<ApiDeleteUser>({
@@ -47,7 +55,7 @@ export const deleteUser = async () => {
 
 export const updatePassword = async (currentPassword: string, newPassword: string) => {
     return await api<{ message: string }>({
-        endpoint: 'users/change-password', 
+        endpoint: 'usuarios/alterar-senha', 
         method: 'PUT',
         data: { currentPassword, newPassword }
     });

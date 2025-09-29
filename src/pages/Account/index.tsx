@@ -10,7 +10,6 @@ import Alert from "../../components/Alert";
 import { ScaleLoader } from "react-spinners";
 import { useTheme } from "styled-components";
 import { useAuth } from "../../hooks/auth";
-// AQUI ESTÁ A IMPORTAÇÃO CORRETA - deleteUser E NÃO deleteUsuario
 import { updateUser, updatePassword, deleteUser } from "../../services/requests";
 import { setUser } from "../../redux/slices/authSlice";
 import { Button } from "../../components/Button";
@@ -26,8 +25,8 @@ export const Account = () => {
 
     const [activeView, setActiveView] = useState<ActiveView>('profile');
     const [loadingRequest, setLoadingRequest] = useState(false);
-    const [nameValue, setNameValue] = useState(user?.name as string);
-    const [emailValue, setEmailValue] = useState(user?.email as string);
+    const [nameValue, setNameValue] = useState(user?.name || '');
+    const [emailValue, setEmailValue] = useState(user?.email || '');
     const [showAlert, setShowAlert] = useState({ type: "error" as "success" | "error", message: "", show: false });
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -40,7 +39,15 @@ export const Account = () => {
         if (request.error) {
             setShowAlert({ type: "error", message: request.error, show: true });
         } else if (request.data) {
-            dispatch(setUser(request.data.user));
+            // Mapear os dados do usuário para o formato esperado pelo Redux
+            const updatedUser = {
+                id: request.data.user.id,
+                name: request.data.user.nome,
+                email: request.data.user.email,
+                cpf: request.data.user.cpf,
+                dataNascimento: request.data.user.dataNascimento
+            };
+            dispatch(setUser(updatedUser));
             setShowAlert({ type: "success", message: "Informações alteradas com sucesso!", show: true });
         }
     };

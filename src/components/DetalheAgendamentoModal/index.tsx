@@ -22,7 +22,7 @@ const formatDateSafe = (dateString: string, formatPattern: string) => {
         if (isNaN(date.getTime())) return "Data inválida";
         return format(date, formatPattern);
     } catch (error) {
-        console.error("Erro ao formatar data:", dateString, error);
+        // Erro ao formatar data
         return "Data inválida";
     }
 };

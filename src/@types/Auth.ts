@@ -1,8 +1,10 @@
 export type User = {
-    id: number,
+    id: string,
     name: string,
     email: string,
-    created_at: number
+    cpf: string,
+    dataNascimento?: string,
+    created_at?: number
 }
 
 export type ApiSignUp = {
@@ -20,7 +22,13 @@ export type ApiGetUser = {
 }
 
 export type ApiUpdateUser = {
-    user : User
+    user : {
+        id: string,
+        nome: string,
+        email: string,
+        cpf: string,
+        dataNascimento?: string
+    }
 }
 
 export type ApiDeleteUser = {

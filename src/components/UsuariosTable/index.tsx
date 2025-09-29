@@ -1,4 +1,3 @@
-import { useTheme } from "styled-components";
 import type { Usuario } from "../../@types/Usuario";
 import { format } from "date-fns";
 import {
@@ -20,7 +19,6 @@ type Props = {
 };
 
 export const UsuariosTable = ({ data, onEdit }: Props) => {
-  const theme = useTheme();
 
   return (
     <TableWrapper>

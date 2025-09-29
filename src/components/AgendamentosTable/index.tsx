@@ -14,9 +14,6 @@ import {
     UserInfo,
     UserName,
     UserEmail,
-    AulaInfo,
-    Disciplina,
-    Descricao,
     StatusBadge,
     ConfirmIcon,
     CancelIcon

@@ -60,7 +60,7 @@ export const NovoAgendamento = () => {
             const { items, pageTotal, curPage } = response.data.alunos;
             setAlunos(prev => (page === 1 ? items : [...prev, ...items]));
             setHasMoreAlunos(curPage < pageTotal);
-        } else { console.error("Erro ao buscar alunos:", response.error); }
+        }
         setLoadingAlunos(false);
     };
     const debouncedLoadAlunos = useCallback(debounce((search: string) => { setAlunoPage(1); setHasMoreAlunos(true); loadAlunos(1, search); }, 500), []);
@@ -72,7 +72,7 @@ export const NovoAgendamento = () => {
             const { items, pageTotal, curPage } = response.data.professores;
             setProfessores(prev => (page === 1 ? items : [...prev, ...items]));
             setHasMoreProfessores(curPage < pageTotal);
-        } else { console.error("Erro ao buscar professores:", response.error); }
+        }
         setLoadingProfessores(false);
     };
     const debouncedLoadProfessores = useCallback(debounce((search: string) => { setProfessorPage(1); setHasMoreProfessores(true); loadProfessores(1, search); }, 500), []);

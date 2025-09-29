@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/auth"
 import { useNavigate } from "react-router-dom"
-import { Card, CardBody, CardFooter, CardHeader, CardSubTitle, CardTitle, Container, Link, Wrapper } from "./styles"
+import { Card, CardBody, CardFooter, CardHeader, CardSubTitle, CardTitle, Container, Wrapper } from "./styles"
 import Alert from "../../components/Alert"
 import TextInput from "../../components/TextInput"
 import { Button } from "../../components/Button"
