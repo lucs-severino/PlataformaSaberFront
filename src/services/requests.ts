@@ -167,7 +167,7 @@ export const getDashboard = async(month: string, year: string) => {
 export const getAulasPorPeriodo = async (month: string, year: string) => {
     return await api<AulasPorPeriodo>({
         endpoint: 'agendamentos/aulas-por-periodo',
-        data: { month, year }
+        data: { month: parseInt(month), year: parseInt(year) }
     });
 };
 
@@ -231,7 +231,7 @@ export const getHorariosDisponiveis = async (professorId: string, data: string) 
 export const getDashboardAgendamentos = async (month: string, year: string) => {
     return await api<DashboardData>({ 
         endpoint: 'agendamentos/dashboard-cards',
-        data: { month, year }
+        data: { month: parseInt(month), year: parseInt(year) }
     });
 };
 

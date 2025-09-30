@@ -4,61 +4,73 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    background: linear-gradient(135deg, ${props => props.theme.COLORS.background} 0%, ${props => props.theme.COLORS.primaryBackgroundExtraLight} 100%);
 `
 
 export const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 25px 50px;
+    padding: ${props => props.theme.SPACING['2xl']} ${props => props.theme.SPACING['3xl']};
+    background: ${props => props.theme.COLORS.cardBackground};
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
-    gap: 20px;
+    gap: ${props => props.theme.SPACING.xl};
+    box-shadow: ${props => props.theme.SHADOWS.sm};
 
-    @media (max-width: 992px) {
+    @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
         flex-direction: column;
         align-items: flex-start;
-        padding: 25px 20px;
+        padding: ${props => props.theme.SPACING.xl} ${props => props.theme.SPACING.lg};
+    }
+    
+    @media (max-width: ${props => props.theme.BREAKPOINTS.sm}) {
+        padding: ${props => props.theme.SPACING.lg} ${props => props.theme.SPACING.md};
     }
 `
 
 export const HeaderActions = styled.div`
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: ${props => props.theme.SPACING.lg};
 
-    @media (max-width: 992px) {
+    @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
         width: 100%;
         flex-direction: column-reverse;
         align-items: stretch;
-        gap: 15px;
+        gap: ${props => props.theme.SPACING.md};
     }
 `
 
 export const HeaderInfo = styled.div`
     display: flex;
     flex-direction: column;
+    gap: ${props => props.theme.SPACING.xs};
 `
 
 export const HeaderTitle = styled.span`
-    font-size: ${props => props.theme.FONT_SIZES.xl};
-    color: ${props => props.theme.COLORS.textColor500};
-    font-weight: 800;
+    font-size: ${props => props.theme.FONT_SIZES['3xl']};
+    background: linear-gradient(135deg, ${props => props.theme.COLORS.primary}, ${props => props.theme.COLORS.musicalPink});
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: ${props => props.theme.FONT_WEIGHTS.bold};
 `
 
 export const HeaderSubtitle = styled.span`
-    font-size: ${props => props.theme.FONT_SIZES.sm};
-    color: ${props => props.theme.COLORS.textColor500};
+    font-size: ${props => props.theme.FONT_SIZES.lg};
+    color: ${props => props.theme.COLORS.textColor600};
+    font-weight: ${props => props.theme.FONT_WEIGHTS.medium};
 `
 
 export const HeaderFilter = styled.div`
     display: flex;
-    gap: 14px;
+    gap: ${props => props.theme.SPACING.md};
     
-    @media (max-width: 992px) {
+    @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
         width: 100%;
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: ${props => props.theme.BREAKPOINTS.sm}) {
         flex-direction: column;
     }
 `
@@ -68,73 +80,179 @@ export const Loading = styled.div`
     align-items: center;
     justify-content: center;
     flex: 1;
+    min-height: 400px;
 `
 
 export const Body = styled.div`
     flex: 1;
-    padding: 40px 50px;
+    padding: ${props => props.theme.SPACING['2xl']} ${props => props.theme.SPACING['3xl']};
     overflow-y: auto;
 
-    @media (max-width: 768px) {
-        padding: 30px 20px;
+    @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
+        padding: ${props => props.theme.SPACING.xl} ${props => props.theme.SPACING.lg};
+    }
+    
+    @media (max-width: ${props => props.theme.BREAKPOINTS.sm}) {
+        padding: ${props => props.theme.SPACING.lg} ${props => props.theme.SPACING.md};
     }
 `
-export const ContentWrapper = styled.div`
-  width: 100%;
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
-`;
 
+export const ContentWrapper = styled.div`
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+`;
 
 export const BodyRow = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: ${props => props.theme.SPACING.xl};
+    
+    @media (max-width: ${props => props.theme.BREAKPOINTS.sm}) {
+        grid-template-columns: 1fr;
+        gap: ${props => props.theme.SPACING.lg};
+    }
 `
 
 export const InformationCard = styled.div<{ $isClickable?: boolean }>`
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: ${props => props.theme.SPACING.lg};
     width: 100%;
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    padding: 15px;
-    border-radius: 10px;
+    background: ${props => props.theme.COLORS.cardBackground};
+    border: 1px solid ${props => props.theme.COLORS.cardBorder};
+    padding: ${props => props.theme.SPACING.xl};
+    border-radius: ${props => props.theme.BORDER_RADIUS.xl};
     box-sizing: border-box;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: ${props => props.theme.SHADOWS.sm};
+    position: relative;
+    overflow: hidden;
+    animation: cardSlideIn 0.6s ease-out;
+
+    @keyframes cardSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, ${props => props.theme.COLORS.primary}, ${props => props.theme.COLORS.musicalPink});
+        opacity: 0;
+        transition: all 0.3s ease;
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(37, 99, 235, 0.05));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
 
     ${({ $isClickable }) => $isClickable && css`
         cursor: pointer;
 
         &:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: ${({ theme }) => theme.SHADOWS.xl};
             border-color: ${({ theme }) => theme.COLORS.primary};
+            
+            &::before {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+            
+            &::after {
+                opacity: 1;
+            }
         }
     `}
 `
+
 export const ChartContainer = styled.div`
-    margin-top: 40px;
-    padding: 30px;
-    border: 1px solid ${props => props.theme.COLORS.borderColor};
-    border-radius: 10px;
-    background-color: ${props => props.theme.COLORS.navbarBackground};
-    height: 400px;
+    margin-top: ${props => props.theme.SPACING['2xl']};
+    padding: ${props => props.theme.SPACING['2xl']};
+    background: ${props => props.theme.COLORS.cardBackground};
+    border: 1px solid ${props => props.theme.COLORS.cardBorder};
+    border-radius: ${props => props.theme.BORDER_RADIUS.xl};
+    box-shadow: ${props => props.theme.SHADOWS.md};
+    min-height: 400px;
+    position: relative;
+    animation: chartSlideIn 0.8s ease-out 0.2s both;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: ${props => props.theme.SHADOWS.lg};
+    }
+    
+    @keyframes chartSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, ${props => props.theme.COLORS.primary}, ${props => props.theme.COLORS.musicalPink});
+        border-radius: ${props => props.theme.BORDER_RADIUS.xl} ${props => props.theme.BORDER_RADIUS.xl} 0 0;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
 `
 
 export const InformationCardContent = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: ${props => props.theme.SPACING.xs};
+    flex: 1;
 `
 
 export const InformationCardContentValue = styled.span`
-    color: ${props => props.theme.COLORS.textColor500};
-    font-weight: 700;
-    font-size: ${props => props.theme.FONT_SIZES.lg};
+    color: ${props => props.theme.COLORS.textColor400};
+    font-weight: ${props => props.theme.FONT_WEIGHTS.bold};
+    font-size: ${props => props.theme.FONT_SIZES['2xl']};
+    line-height: 1.2;
 `
 
 export const InformationCardContentLabel = styled.span`
-    color: ${props => props.theme.COLORS.textColor400};
-    font-weight: 600;
+    color: ${props => props.theme.COLORS.textColor600};
+    font-weight: ${props => props.theme.FONT_WEIGHTS.medium};
+    font-size: ${props => props.theme.FONT_SIZES.sm};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 `

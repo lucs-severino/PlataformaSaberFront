@@ -110,7 +110,7 @@ export const Home = () => {
         <Container>
             <Header>
                 <HeaderInfo>
-                    <HeaderTitle>Dashboard</HeaderTitle>
+                    <HeaderTitle>Convergência Musical</HeaderTitle>
                     <HeaderSubtitle>Acompanhe os agendamentos e filtre por mês e ano com facilidade!</HeaderSubtitle>
                 </HeaderInfo>
 

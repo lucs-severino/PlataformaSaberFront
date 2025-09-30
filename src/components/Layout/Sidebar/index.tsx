@@ -6,6 +6,7 @@ import {
     Footer,
     Header,
     HeaderLogo,
+    SchoolNameLogo,
     Navigation,
     NavigationItem,
     NavigationItemIcon,
@@ -54,11 +55,9 @@ export const Sidebar = ({ isExpanded, handleToggleExpand, isMobile }: SidebarPro
             <Header>
                 {isExpanded && (
                     <Link to='/'>
-                        <HeaderLogo
-                            src="/logo.png"
-                            alt="Logo Image"
-                            $expanded={isExpanded}
-                        />
+                        <SchoolNameLogo>
+                            Convergência Musical
+                        </SchoolNameLogo>
                     </Link>
                 )}
                 <SidebarToggleButton onClick={handleToggleExpand} borderRadius="rounded">

@@ -1,23 +1,19 @@
-import {createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import {createSlice } from "@reduxjs/toolkit"
 
 interface ThemeState {
-    theme: 'light' | 'dark'
+    theme: 'music'
 }
 
 const initialState: ThemeState = {
-    theme: 'light'
+    theme: 'music'
 }
 
 export const themeSlice = createSlice({
     name: 'theme', 
     initialState,
     reducers: {
-        setTheme: (state, action: PayloadAction<ThemeState['theme']>) =>{
-            state.theme = action.payload
-        }
+        // Mantido para compatibilidade, mas não será usado
     }
 })
-
-export const { setTheme } = themeSlice.actions
 
 export default themeSlice.reducer

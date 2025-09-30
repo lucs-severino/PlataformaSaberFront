@@ -1,15 +1,12 @@
 import { useState } from "react"
-import { useTheme } from "../../../hooks/theme"
 import { useAuth } from "../../../hooks/auth"
 import { Container, Icon, LeftSide, RightSide } from "./styles"
 import { BiExitFullscreen, BiFullscreen } from "react-icons/bi"
-import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"
 import { TbLogout } from "react-icons/tb"
 
 export const Navbar = () => {
     const [fullScreenEnabled, setFullScreenEnabled] = useState(false)
 
-    const { handleToggleTheme, theme } = useTheme()
     const { handleSignOut } = useAuth()
 
     const handleToggleFullScreen = async () => {
@@ -38,14 +35,6 @@ export const Navbar = () => {
             </LeftSide>
 
             <RightSide>
-                <Icon onClick={handleToggleTheme}>
-                    {theme == 'dark' ?
-                        <MdOutlineLightMode />
-                        :
-                        <MdOutlineDarkMode />
-                    }
-                </Icon>
-
                 <Icon onClick={handleSignOut}>
                     <TbLogout />
                 </Icon>
