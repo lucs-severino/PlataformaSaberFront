@@ -22,7 +22,8 @@ import {
     MdOutlineKeyboardArrowLeft,
     MdOutlineKeyboardArrowRight,
     MdOutlineCalendarToday,
-    MdAddCircleOutline
+    MdAddCircleOutline,
+    MdPlayCircleOutline
 } from "react-icons/md";
 
 const menuItems = [
@@ -31,6 +32,7 @@ const menuItems = [
     { label: 'Nova Aula', url: '/agendamento/novo', icon: <MdAddCircleOutline /> },
     { label: 'Colaboradores', url: '/Usuarios', icon: <MdOutlineListAlt /> },
     { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd /> },
+    { label: 'Vídeos', url: '/videos', icon: <MdPlayCircleOutline /> },
 ];
 
 interface SidebarProps {

@@ -9,6 +9,7 @@ import { EditarUsuario } from "../pages/Usuario/Edit/EditarUsuario"
 import { CadastrarUsuario } from "../pages/Usuario/New/CadastrarUsuario"
 import { NovoAgendamento } from "../pages/Agendamento/Novo"
 import { Agendamentos } from "../pages/Agendamento/Agendamentos"
+import { Videos } from "../pages/Videos"
 
 export const MainRoutes = () => {
     return (
@@ -32,6 +33,10 @@ export const MainRoutes = () => {
                 <Route
                     path="/account"
                     element={<Account />}
+                />
+                <Route
+                    path="/videos"
+                    element={<Videos />}
                 />
                 <Route path="/agendamento">
                     <Route

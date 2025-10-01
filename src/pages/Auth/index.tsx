@@ -15,6 +15,7 @@ export const Auth = ({ type }: Props) => {
     const [emailInput, setEmailInput] = useState('')
     const [passwordInput, setPasswordInput] = useState('')
     const [showAlert, setShowAlert] = useState({ type: 'error', message: "", show: false })
+    const [isLoading, setIsLoading] = useState(false)
 
     const { handleSignIn, handleSignUp } = useAuth()
 
@@ -28,15 +29,24 @@ export const Auth = ({ type }: Props) => {
             return;
         }
 
-        const request = await (type == 'signin' ? handleSignIn({ email, password }) : handleSignUp({ name, email, password }))
+        try {
+            setIsLoading(true)
+            setShowAlert({ type: 'error', message: '', show: false })
+            
+            const request = await (type == 'signin' ? handleSignIn({ email, password }) : handleSignUp({ name, email, password }))
 
-        if (request != true) {
-            setShowAlert({ type: 'error', message: request, show: true })
-            return;
+            if (request != true) {
+                setShowAlert({ type: 'error', message: request, show: true })
+                return;
+            }
+
+            // Redirect user after authentication
+            navigate('/')
+        } catch (error) {
+            setShowAlert({ type: 'error', message: 'Erro inesperado. Tente novamente.', show: true })
+        } finally {
+            setIsLoading(false)
         }
-
-        // Redirect user after authentication
-        navigate('/')
     }
 
     useEffect(() => {
@@ -97,8 +107,11 @@ export const Auth = ({ type }: Props) => {
                     </CardBody>
 
                     <CardFooter>
-                        <Button onClick={handleOnClick} size="md">
-                            {type == 'signin' ? '🎵 Entrar' : '🎼 Registrar-se'}
+                        <Button onClick={handleOnClick} size="md" disabled={isLoading}>
+                            {isLoading 
+                                ? '⏳ Carregando...' 
+                                : (type == 'signin' ? '🎵 Entrar' : '🎼 Registrar-se')
+                            }
                         </Button>
                     </CardFooter>
                 </Card>
