@@ -27,12 +27,12 @@ import {
 } from "react-icons/md";
 
 const menuItems = [
-    { label: 'Dashboard', url: '/', icon: <MdOutlineDashboard /> },
-    { label: 'Agendamento', url: '/agendamento', icon: <MdOutlineCalendarToday /> },
-    { label: 'Nova Aula', url: '/agendamento/novo', icon: <MdAddCircleOutline /> },
-    { label: 'Colaboradores', url: '/Usuarios', icon: <MdOutlineListAlt /> },
-    { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd /> },
-    { label: 'Vídeos', url: '/videos', icon: <MdPlayCircleOutline /> },
+    { label: 'Dashboard', url: '/', icon: <MdOutlineDashboard />, allowedRoles: ['Administracao'] },
+    { label: 'Agendamento', url: '/agendamento', icon: <MdOutlineCalendarToday />, allowedRoles: ['Administracao', 'Professor', 'Aluno'] },
+    { label: 'Nova Aula', url: '/agendamento/novo', icon: <MdAddCircleOutline />, allowedRoles: ['Administracao', 'Professor', 'Aluno'] },
+    { label: 'Colaboradores', url: '/Usuarios', icon: <MdOutlineListAlt />, allowedRoles: ['Administracao'] },
+    { label: 'Cadastrar', url: '/Usuarios/Cadastrar', icon: <MdPersonAdd />, allowedRoles: ['Administracao'] },
+    { label: 'Vídeos', url: '/videos', icon: <MdPlayCircleOutline />, allowedRoles: ['Administracao', 'Professor', 'Aluno'] },
 ];
 
 interface SidebarProps {
@@ -68,20 +68,22 @@ export const Sidebar = ({ isExpanded, handleToggleExpand, isMobile }: SidebarPro
             </Header>
 
             <Navigation>
-                {menuItems.map((item, key) => (
-                    <Link to={item.url} key={key} onClick={handleLinkClick}>
-                        <NavigationItem $isActive={pathname === item.url}>
-                            <NavigationItemIcon>
-                                {item.icon}
-                            </NavigationItemIcon>
-                            {isExpanded && (
-                                <NavigationItemLabel>
-                                    {item.label}
-                                </NavigationItemLabel>
-                            )}
-                        </NavigationItem>
-                    </Link>
-                ))}
+                {menuItems
+                    .filter(item => item.allowedRoles.includes(auth.user?.tipoPessoa || ''))
+                    .map((item, key) => (
+                        <Link to={item.url} key={key} onClick={handleLinkClick}>
+                            <NavigationItem $isActive={pathname === item.url}>
+                                <NavigationItemIcon>
+                                    {item.icon}
+                                </NavigationItemIcon>
+                                {isExpanded && (
+                                    <NavigationItemLabel>
+                                        {item.label}
+                                    </NavigationItemLabel>
+                                )}
+                            </NavigationItem>
+                        </Link>
+                    ))}
             </Navigation>
 
             <Footer>
@@ -93,6 +95,9 @@ export const Sidebar = ({ isExpanded, handleToggleExpand, isMobile }: SidebarPro
                         {isExpanded && (
                             <UserName>
                                 {auth.user?.name}
+                                <span style={{ fontSize: '12px', color: '#666', display: 'block', marginTop: '2px' }}>
+                                    Perfil: {auth.user?.tipoPessoa || 'Não identificado'}
+                                </span>
                             </UserName>
                         )}
                     </User>

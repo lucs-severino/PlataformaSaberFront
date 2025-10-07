@@ -6,6 +6,8 @@ import { Button } from '../../../components/Button';
 import TextInput from '../../../components/TextInput';
 import Alert from '../../../components/Alert';
 import type { ApiProfessor, Usuario } from '../../../@types/Usuario';
+import { useAppSelector } from '../../../redux/hooks';
+import { getRedirectPathByProfile } from '../../../utils/redirectByProfile';
 import {
     ActionButtons,
     Body,
@@ -27,6 +29,7 @@ import { criarAgendamento, getAlunos, getProfessores, getHorariosDisponiveis } f
 
 export const NovoAgendamento = () => {
     const navigate = useNavigate();
+    const { user } = useAppSelector(state => state.auth);
     const [step, setStep] = useState(1);
 
     const [alunos, setAlunos] = useState<Usuario[]>([]);
@@ -77,16 +80,45 @@ export const NovoAgendamento = () => {
     };
     const debouncedLoadProfessores = useCallback(debounce((search: string) => { setProfessorPage(1); setHasMoreProfessores(true); loadProfessores(1, search); }, 500), []);
 
-    useEffect(() => { loadAlunos(1, ""); loadProfessores(1, ""); }, []);
+    useEffect(() => { 
+        loadAlunos(1, ""); 
+        loadProfessores(1, ""); 
+        
+        // Pré-selecionar usuário baseado no perfil
+        if (user?.tipoPessoa === 'Aluno') {
+            // Para alunos, pré-selecionar o próprio aluno
+            setSelectedAluno({ 
+                label: `${user.name} (${user.email})`, 
+                value: user.id 
+            });
+            setStep(2); // Pular para seleção de professor
+        } else if (user?.tipoPessoa === 'Professor') {
+            // Para professores, pré-selecionar o próprio professor
+            setSelectedProfessor({ 
+                label: `${user.name}`, 
+                value: user.id 
+            });
+            // Professor começa na etapa 1 para selecionar aluno
+            setStep(1);
+        }
+    }, [user]);
 
     useEffect(() => {
         const fetchHorarios = async () => {
             if (selectedProfessor && selectedDate) {
-                const response = await getHorariosDisponiveis(selectedProfessor.value, selectedDate);
-                if (response.data) {
-                    setAvailableTimeSlots(response.data.horarios);
-                } else {
+                try {
+                    const response = await getHorariosDisponiveis(selectedProfessor.value, selectedDate);
+                    if (response.data) {
+                        setAvailableTimeSlots(response.data.horarios);
+                    } else {
+                        setAvailableTimeSlots([]);
+                        if (response.error) {
+                            setShowAlert({ type: "error", message: response.error, show: true });
+                        }
+                    }
+                } catch (error) {
                     setAvailableTimeSlots([]);
+                    setShowAlert({ type: "error", message: "Erro ao buscar horários disponíveis.", show: true });
                 }
             }
         };
@@ -103,8 +135,24 @@ export const NovoAgendamento = () => {
     const handleConfirm = async () => {
         if (isSubmitting) return;
 
-        if (!selectedAluno || !selectedProfessor || !selectedDate || !selectedTime) {
-            setShowAlert({ type: "error", message: "Todos os campos do resumo devem ser preenchidos.", show: true });
+        // Validações específicas por perfil
+        if (user?.tipoPessoa === 'Aluno' && !selectedProfessor) {
+            setShowAlert({ type: "error", message: "Selecione um professor para a aula.", show: true });
+            return;
+        }
+        
+        if (user?.tipoPessoa === 'Professor' && !selectedAluno) {
+            setShowAlert({ type: "error", message: "Selecione um aluno para a aula.", show: true });
+            return;
+        }
+        
+        if (user?.tipoPessoa === 'Administracao' && (!selectedAluno || !selectedProfessor)) {
+            setShowAlert({ type: "error", message: "Selecione um aluno e um professor para a aula.", show: true });
+            return;
+        }
+
+        if (!selectedDate || !selectedTime) {
+            setShowAlert({ type: "error", message: "Data e horário são obrigatórios.", show: true });
             return;
         }
 
@@ -124,7 +172,7 @@ export const NovoAgendamento = () => {
             setIsSubmitting(false);
         } else {
             setShowAlert({ type: "success", message: "Aula agendada com sucesso!", show: true });
-            setTimeout(() => { navigate('/'); }, 1500);
+            setTimeout(() => { navigate(getRedirectPathByProfile(user)); }, 1500);
 
         }
     };
@@ -182,8 +230,42 @@ export const NovoAgendamento = () => {
                         <Step active={step >= 5}>5</Step>
                     </StepContainer>
 
-                    {step === 1 && (<FormGroup> <label>Selecione o Aluno</label> <Select options={alunoOptions} value={selectedAluno} onChange={setSelectedAluno} onInputChange={handleAlunoInputChange} onMenuScrollToBottom={handleAlunoMenuScrollToBottom} isLoading={loadingAlunos} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum aluno encontrado"} isClearable /> </FormGroup>)}
-                    {step === 2 && (<FormGroup> <label>Selecione o Professor</label> <Select options={professorOptions} value={selectedProfessor} onChange={setSelectedProfessor} onInputChange={handleProfessorInputChange} onMenuScrollToBottom={handleProfessorMenuScrollToBottom} isLoading={loadingProfessores} placeholder="Digite para pesquisar..." loadingMessage={() => "Carregando mais..."} noOptionsMessage={() => "Nenhum professor encontrado"} isClearable /> </FormGroup>)}
+                    {step === 1 && (
+                        <FormGroup> 
+                            <label>Selecione o Aluno</label> 
+                            <Select 
+                                options={alunoOptions} 
+                                value={selectedAluno} 
+                                onChange={setSelectedAluno} 
+                                onInputChange={handleAlunoInputChange} 
+                                onMenuScrollToBottom={handleAlunoMenuScrollToBottom} 
+                                isLoading={loadingAlunos} 
+                                placeholder="Digite para pesquisar..." 
+                                loadingMessage={() => "Carregando mais..."} 
+                                noOptionsMessage={() => "Nenhum aluno encontrado"} 
+                                isClearable={user?.tipoPessoa !== 'Aluno'}
+                                isDisabled={user?.tipoPessoa === 'Aluno'}
+                            /> 
+                        </FormGroup>
+                    )}
+                    {step === 2 && (
+                        <FormGroup> 
+                            <label>Selecione o Professor</label> 
+                            <Select 
+                                options={professorOptions} 
+                                value={selectedProfessor} 
+                                onChange={setSelectedProfessor} 
+                                onInputChange={handleProfessorInputChange} 
+                                onMenuScrollToBottom={handleProfessorMenuScrollToBottom} 
+                                isLoading={loadingProfessores} 
+                                placeholder="Digite para pesquisar..." 
+                                loadingMessage={() => "Carregando mais..."} 
+                                noOptionsMessage={() => "Nenhum professor encontrado"} 
+                                isClearable={user?.tipoPessoa !== 'Professor'}
+                                isDisabled={user?.tipoPessoa === 'Professor'}
+                            /> 
+                        </FormGroup>
+                    )}
                     {step === 3 && (<FormGroup> <TextInput label="Data da Aula" type="date" value={selectedDate} onChange={handleDateChange} borderRadius="sm" min={today} /> </FormGroup>)}
                     {step === 4 && (<FormGroup> <label>Horário</label> <TimeGrid> {availableTimeSlots.map(time => (<TimeButton key={time} active={selectedTime === time} onClick={() => setSelectedTime(time)}>{time}</TimeButton>))} </TimeGrid> {selectedDate && availableTimeSlots.length === 0 && <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>Nenhum horário disponível para esta data.</p>} </FormGroup>)}
 

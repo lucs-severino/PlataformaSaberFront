@@ -20,6 +20,7 @@ import {
 } from './styles';
 import { MdCheck, MdClose, MdVisibility } from 'react-icons/md';
 import type { AgendamentoLista } from '../../@types/Agendamento';
+import { useAppSelector } from '../../redux/hooks';
 
 type Props = {
     data: AgendamentoLista[];
@@ -36,6 +37,24 @@ const getInitials = (name: string) => {
 };
 
 export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: Props) => {
+    const { user } = useAppSelector(state => state.auth);
+    
+    // Função para verificar se o usuário pode confirmar o agendamento
+    const canConfirmAgendamento = (agendamento: AgendamentoLista) => {
+        if (agendamento.status !== 'Agendado') return false;
+        
+        // Apenas Professor e Administrador podem confirmar aulas
+        if (user?.tipoPessoa === 'Aluno') return false;
+        
+        // Professor só pode confirmar suas próprias aulas
+        if (user?.tipoPessoa === 'Professor') {
+            return agendamento.professor.id === user.id;
+        }
+        
+        // Administrador pode confirmar qualquer aula
+        return user?.tipoPessoa === 'Administracao';
+    };
+    
     return (
         <TableWrapper>
             <Table>
@@ -83,7 +102,7 @@ export const AgendamentosTable = ({ data, onConfirm, onCancel, onViewDetails }: 
                                     <ConfirmIcon
                                         title="Confirmar"
                                         onClick={() => onConfirm(agendamento.id)}
-                                        disabled={agendamento.status !== 'Agendado'}
+                                        disabled={!canConfirmAgendamento(agendamento)}
                                     >
                                         <MdCheck size={25} />
                                     </ConfirmIcon>

@@ -95,6 +95,9 @@ export const Account = () => {
             <Header>
                 <HeaderInfo>
                     <HeaderTitle>Minha conta</HeaderTitle>
+                    <p style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#666' }}>
+                        Perfil: {user?.tipoPessoa || 'Não identificado'}
+                    </p>
                 </HeaderInfo>
                 <HeaderDeleteAccount>
                     <Button 

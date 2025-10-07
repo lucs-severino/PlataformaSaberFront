@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/auth"
 import { useNavigate } from "react-router-dom"
+import { useAppSelector } from "../../redux/hooks"
 import { Card, CardBody, CardFooter, CardHeader, CardSubTitle, CardTitle, Container, Wrapper, LogoContainer, SchoolName, SchoolSubtitle } from "./styles"
 import Alert from "../../components/Alert"
 import TextInput from "../../components/TextInput"
@@ -18,11 +19,17 @@ export const Auth = ({ type }: Props) => {
     const [isLoading, setIsLoading] = useState(false)
 
     const { handleSignIn, handleSignUp } = useAuth()
+    const { user } = useAppSelector(state => state.auth)
 
     const navigate = useNavigate()
 
     const handleOnClick = async () => {
-        const [name, email, password] = [nameInput, emailInput, passwordInput]
+        // Remover espaços em branco dos campos antes de processar
+        const [name, email, password] = [
+            nameInput.trim(), 
+            emailInput.trim(), 
+            passwordInput.trim()
+        ]
 
         if ((type == 'signup' && !name) || !email || !password) {
             setShowAlert({ type: 'error', message: 'Preencha todos os campos!', show: true })
@@ -40,8 +47,9 @@ export const Auth = ({ type }: Props) => {
                 return;
             }
 
-            // Redirect user after authentication
-            navigate('/')
+            // Redirect user after authentication based on profile
+            const redirectPath = user?.tipoPessoa === 'Administracao' ? '/' : '/agendamento'
+            navigate(redirectPath)
         } catch (error) {
             setShowAlert({ type: 'error', message: 'Erro inesperado. Tente novamente.', show: true })
         } finally {

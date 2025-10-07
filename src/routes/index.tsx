@@ -10,6 +10,7 @@ import { CadastrarUsuario } from "../pages/Usuario/New/CadastrarUsuario"
 import { NovoAgendamento } from "../pages/Agendamento/Novo"
 import { Agendamentos } from "../pages/Agendamento/Agendamentos"
 import { Videos } from "../pages/Videos"
+import { ProtectedRoute } from "../components/ProtectedRoute"
 
 export const MainRoutes = () => {
     return (
@@ -27,7 +28,11 @@ export const MainRoutes = () => {
             <Route element={<Layout />}>
                 <Route
                     index
-                    element={<Home />}
+                    element={
+                        <ProtectedRoute allowedRoles={["Administracao"]}>
+                            <Home />
+                        </ProtectedRoute>
+                    }
                 />
 
                 <Route
@@ -51,15 +56,27 @@ export const MainRoutes = () => {
                 <Route path="Usuarios/">
                     <Route
                         index
-                        element={<Usuarios />}
+                        element={
+                            <ProtectedRoute allowedRoles={["Administracao"]}>
+                                <Usuarios />
+                            </ProtectedRoute>
+                        }
                     />
                     <Route
                         path=":id/editar"
-                        element={<EditarUsuario />}
+                        element={
+                            <ProtectedRoute allowedRoles={["Administracao"]}>
+                                <EditarUsuario />
+                            </ProtectedRoute>
+                        }
                     />
                     <Route
                         path="Cadastrar"
-                        element={<CadastrarUsuario />}
+                        element={
+                            <ProtectedRoute allowedRoles={["Administracao"]}>
+                                <CadastrarUsuario />
+                            </ProtectedRoute>
+                        }
                     />
                 </Route>
             </Route>

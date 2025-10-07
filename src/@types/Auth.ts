@@ -4,7 +4,8 @@ export type User = {
     email: string,
     cpf: string,
     dataNascimento?: string,
-    created_at?: number
+    created_at?: number,
+    tipoPessoa: string
 }
 
 export type ApiSignUp = {
