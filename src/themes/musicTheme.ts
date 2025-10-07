@@ -1,74 +1,74 @@
 export const musicTheme = {
     COLORS: {
-        /* Application - Sóber Musical Colors */
-        primary: '#DC2626', // Vermelho suave
+        /* Application - Cores da Escola */
+        primary: '#DC2626', // Vermelho da escola
         primaryHover: '#B91C1C',
         primaryLight: '#FEE2E2',
         primaryDark: '#991B1B',
-        primaryBackgroundExtraLight: '#F8FAFC',
-        background: '#f0f2f5',
-        backgroundSecondary: '#e8eaed',
-        textColor400: '#1F2937',
-        textColor500: '#374151',
-        textColor600: '#4B5563',
-        textColor700: '#6B7280',
-        borderColor: '#E5E7EB',
-        borderColorLight: '#F3F4F6',
+        primaryBackgroundExtraLight: '#F0F8FF', // Azul claro
+        background: '#FFFFFF', // Branco
+        backgroundSecondary: '#F8F9FA', // Cinza claro
+        textColor400: '#2D3748', // Preto mais claro
+        textColor500: '#4A5568',
+        textColor600: '#718096',
+        textColor700: '#A0AEC0',
+        borderColor: '#E2E8F0', // Cinza claro
+        borderColorLight: '#F7FAFC',
         danger: '#DC2626',
         dangerLight: '#FEE2E2',
-        success: '#059669',
-        successLight: '#D1FAE5',
-        warning: '#D97706',
-        warningLight: '#FEF3C7',
+        success: '#38A169',
+        successLight: '#C6F6D5',
+        warning: '#D69E2E',
+        warningLight: '#FEFCBF',
         white: '#FFFFFF',
 
-        /* Musical accent colors - Sóber */
+        /* Musical accent colors - Padronizado */
         musicalGold: '#DC2626',
         musicalGoldLight: '#FEE2E2',
-        musicalSilver: '#6B7280',
-        musicalBlue: '#DC2626',
-        musicalBlueLight: '#FEE2E2',
-        musicalPurple: '#B91C1C',
-        musicalPurpleLight: '#FEE2E2',
-        musicalPink: '#EF4444',
-        musicalPinkLight: '#FEE2E2',
+        musicalSilver: '#718096',
+        musicalBlue: '#3182CE', // Azul claro
+        musicalBlueLight: '#EBF8FF',
+        musicalPurple: '#805AD5',
+        musicalPurpleLight: '#FAF5FF',
+        musicalPink: '#D53F8C',
+        musicalPinkLight: '#FED7E2',
 
         /* Application Components */
-        buttonBackground: '#DC2626',
+        buttonBackground: '#3182CE', // Azul claro
         buttonColor: '#FFFFFF',
-        buttonHover: '#B91C1C',
-        buttonSecondary: '#F3F4F6',
-        buttonSecondaryHover: '#E5E7EB',
-        inputBackground: '#f0f2f5',
-        inputBackgroundHover: '#F1F5F9',
-        inputColor: '#1F2937',
-        inputBorderColor: '#E5E7EB',
-        inputBorderColorFocus: '#DC2626',
-        inputPlaceholderColor: '#9CA3AF',
-        tableHeaderBackground: '#f0f2f5',
-        tableHeaderBorderColor: '#E5E7EB',
-        tableRowHover: '#F8FAFC',
-        tableRowBorder: '#F3F4F6',
+        buttonHover: '#2C5AA0',
+        buttonSecondary: '#F8F9FA',
+        buttonSecondaryHover: '#E2E8F0',
+        inputBackground: '#FFFFFF',
+        inputBackgroundHover: '#F8F9FA',
+        inputColor: '#2D3748',
+        inputBorderColor: '#E2E8F0',
+        inputBorderColorFocus: '#3182CE',
+        inputPlaceholderColor: '#A0AEC0',
+        tableHeaderBackground: '#F8F9FA',
+        tableHeaderBorderColor: '#E2E8F0',
+        tableRowHover: '#F0F8FF',
+        tableRowBorder: '#F7FAFC',
 
         /* Layout */
-        sidebarBackground: '#1F2937',
-        sidebarColor: '#F9FAFB',
-        sidebarBackgroundHover: '#374151',
-        sidebarBorderColor: '#4B5563',
-        navbarBackground: '#f0f2f5',
-        navbarColor: '#1F2937',
-        navbarBackgroundHover: '#F1F5F9',
-        navbarBorder: '#E5E7EB',
+        sidebarBackground: '#2D3748', // Preto mais claro
+        sidebarColor: '#FFFFFF',
+        sidebarBackgroundHover: '#4A5568',
+        sidebarBorderColor: '#718096',
+        navbarBackground: '#FFFFFF',
+        navbarColor: '#2D3748',
+        navbarBackgroundHover: '#F8F9FA',
+        navbarBorder: '#E2E8F0',
 
         /* Cards and Surfaces */
-        cardBackground: '#f0f2f5',
-        cardBorder: '#D1D5DB',
+        cardBackground: '#FFFFFF',
+        cardBorder: '#E2E8F0',
         cardShadow: 'rgba(0, 0, 0, 0.05)',
         cardShadowHover: 'rgba(0, 0, 0, 0.1)',
 
         /* Pages - Auth */
-        authCardTitleColor: '#1F2937',
-        authCardSubTitleColor: '#6B7280',
+        authCardTitleColor: '#2D3748',
+        authCardSubTitleColor: '#718096',
         authErrorAlertBackground: '#DC2626',
         authErrorAlertColor: '#FFFFFF',
     },

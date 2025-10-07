@@ -22,20 +22,10 @@ export const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 12px 24px;
+    background: ${props => props.theme.COLORS.background};
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
     flex-shrink: 0;
-    position: relative;
 
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, ${props => props.theme.COLORS.primary}, transparent);
-        opacity: 0.3;
-    }
 
     @media (max-width: 992px) {
         flex-direction: column;

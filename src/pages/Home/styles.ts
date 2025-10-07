@@ -4,7 +4,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: linear-gradient(135deg, ${props => props.theme.COLORS.background} 0%, ${props => props.theme.COLORS.primaryBackgroundExtraLight} 100%);
+    background: ${props => props.theme.COLORS.background};
 `
 
 export const Header = styled.div`
@@ -12,22 +12,10 @@ export const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: ${props => props.theme.SPACING.md} ${props => props.theme.SPACING.lg};
-    background: ${props => props.theme.COLORS.cardBackground};
+    background: ${props => props.theme.COLORS.background};
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
     gap: ${props => props.theme.SPACING.md};
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: relative;
-
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, ${props => props.theme.COLORS.primary}, transparent);
-        opacity: 0.3;
-    }
+`
 
     @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
         flex-direction: column;
