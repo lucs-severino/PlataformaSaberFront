@@ -97,7 +97,18 @@ export const Account = () => {
                     <HeaderTitle>Minha conta</HeaderTitle>
                 </HeaderInfo>
                 <HeaderDeleteAccount>
-                    <Button onClick={handleDeleteAccount} width="120px" size="md">
+                    <Button 
+                        onClick={handleDeleteAccount} 
+                        width="140px" 
+                        size="md"
+                        style={{
+                            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                            border: 'none',
+                            color: 'white',
+                            fontWeight: '600',
+                            boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)'
+                        }}
+                    >
                         Desativar Conta
                     </Button>
                 </HeaderDeleteAccount>

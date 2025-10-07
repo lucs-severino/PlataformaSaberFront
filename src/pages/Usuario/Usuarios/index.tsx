@@ -33,12 +33,6 @@ export const Usuarios = () => {
     const [activeTypeFilter, setActiveTypeFilter] = useState('');
     const [filtersVisible, setFiltersVisible] = useState(false);
 
-    // ===== REMOVA O BLOCO DUPLICADO ABAIXO =====
-    // const [loadingStats, setLoadingStats] = useState(true);
-    // const [loadingTable, setLoadingTable] = useState(true);
-    // const [searchValue, setSearchValue] = useState('');
-    // ... e assim por diante
-    // ===== FIM DO BLOCO A SER REMOVIDO =====
 
     const theme = useTheme();
     const navigate = useNavigate();

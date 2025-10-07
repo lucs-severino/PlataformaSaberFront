@@ -25,6 +25,7 @@ ChartJS.register(
   Legend
 );
 
+
 export const Home = () => {
     const [loadingRequest, setLoadingRequest] = useState(true);
     const [monthSelected, setMonthSelected] = useState((new Date().getMonth() + 1).toString().padStart(2, '0'));
@@ -182,6 +183,7 @@ export const Home = () => {
                                  <Line options={{ responsive: true, plugins: { legend: { position: 'top' as const }, title: { display: true, text: `Alunos Cadastrados em ${yearSelected}` }}, scales: { y: { beginAtZero: true }}}} data={studentChartData} />
                             </ChartContainer>
                         )}
+
                     </ContentWrapper>
                 </Body>
             )}

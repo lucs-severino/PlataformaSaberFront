@@ -10,30 +10,43 @@ export const Header = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center; 
-    padding: 40px 50px;
+    padding: 12px 24px;
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
     flex-shrink: 0;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, ${props => props.theme.COLORS.primary}, transparent);
+        opacity: 0.3;
+    }
 
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: flex-start;
-        gap: 20px;
-        padding: 25px 20px;
+        gap: 12px;
+        padding: 8px 16px;
     }
 `;
 
 export const HeaderInfo = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 2px;
 `;
 
 export const HeaderTitle = styled.span`
-    font-size: ${props => props.theme.FONT_SIZES.xl};
+    font-size: ${props => props.theme.FONT_SIZES.lg};
     color: ${props => props.theme.COLORS.textColor500};
-    font-weight: 800;
+    font-weight: 600;
 
     @media (max-width: 480px) {
-        font-size: ${props => props.theme.FONT_SIZES.lg};
+        font-size: ${props => props.theme.FONT_SIZES.md};
     }
 `;
 

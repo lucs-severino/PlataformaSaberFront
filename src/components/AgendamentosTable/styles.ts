@@ -104,6 +104,8 @@ export const TableHeadCell = styled.th`
   
   &:last-child {
     border-top-right-radius: ${props => props.theme.BORDER_RADIUS.xl};
+    min-width: 180px;
+    width: 180px;
   }
 `;
 
