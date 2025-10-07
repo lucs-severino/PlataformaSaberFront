@@ -15,7 +15,6 @@ export const Header = styled.div`
     background: ${props => props.theme.COLORS.background};
     border-bottom: 1px solid ${props => props.theme.COLORS.borderColor};
     gap: ${props => props.theme.SPACING.md};
-`
 
     @media (max-width: ${props => props.theme.BREAKPOINTS.lg}) {
         flex-direction: column;
